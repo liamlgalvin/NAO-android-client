@@ -20,7 +20,7 @@ class FlowStreamAdapter<T> : StreamAdapter<T, Flow<T>> {
             }
 
             override fun onNext(data: T) {
-                if (!isClosedForSend) offer(data)
+                if (!isClosedForSend) trySend(data)
             }
         })
         awaitClose {}

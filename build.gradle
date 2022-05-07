@@ -7,6 +7,7 @@ plugins {
 
 apply plugin: 'com.android.application'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdk 32
@@ -51,6 +52,8 @@ android {
 }
 
 dependencies {
+//    implementation 'androidx.appcompat:appcompat:1.4.1'
+//    implementation 'com.google.android.material:material:1.5.0'
     def scarlet_version = '0.1.12'
 
     implementation 'androidx.core:core-ktx:1.7.0'
@@ -76,8 +79,19 @@ dependencies {
     implementation "com.tinder.scarlet:message-adapter-moshi:$scarlet_version"
     implementation "com.tinder.scarlet:stream-adapter-coroutines:$scarlet_version"
 
+    // hilt
     implementation 'com.google.dagger:hilt-android:2.41'
     kapt 'com.google.dagger:hilt-compiler:2.41'
+
+    // okhttp
+    implementation 'com.squareup.okhttp3:okhttp:4.9.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.2'
+
+    // moshi
+    implementation 'com.squareup.moshi:moshi-kotlin:1.13.0'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.13.0'
+
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
 }
 
