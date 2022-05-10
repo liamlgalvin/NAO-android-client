@@ -41,6 +41,9 @@ class DetailViewModel @Inject constructor(
     // todo move
     private val appMapper = AppMapper()
     var apps = SnapshotStateList<App>()
+    var searchText =  mutableStateOf("")
+
+
 
     // TODO: RepositoryListener...
 
@@ -61,10 +64,10 @@ class DetailViewModel @Inject constructor(
         state["ip"] = ip
     }
 
-    fun isValidIp(): Boolean {
-        if (ip.value == "") return false
+    fun isValidIp(ip: String): Boolean {
+        if (ip == "") return false
         val regex = Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$")
-        return regex.matches(ip.value)
+        return regex.matches(ip)
     }
 
     fun updateMessage(message: String) {
@@ -124,7 +127,7 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun completeWebSocketConnection() {
+    fun completeWebSocketConnection() {
         connectedState.value = "connected" // todo fix this
         toggleConnectionStatus()
         webSocketService.sendSubscribe(Subscribe())
@@ -132,7 +135,7 @@ class DetailViewModel @Inject constructor(
         sendMessage("get_status")
     }
 
-    private fun disconnectWebSocket() {
+    fun disconnectWebSocket() {
         connectedState.value = "connection failed" // todo fix this
         toggleConnectionStatus()
         destroyWebSocket()

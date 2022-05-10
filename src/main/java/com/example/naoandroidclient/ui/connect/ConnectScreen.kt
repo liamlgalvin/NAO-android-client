@@ -1,4 +1,4 @@
-package com.example.naoandroidclient.ui.navigation
+package com.example.naoandroidclient.ui.connect
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,12 +13,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.DetailViewModel
+import com.example.naoandroidclient.ui.navigation.Screen
 
 @Composable
 fun ConnectScreen(navController: NavController, detailViewModel: DetailViewModel) {
     val connectionStatus by detailViewModel.connectionStatus.observeAsState()
     if (connectionStatus == ConnectionStatus.CONNECTED) {
-
         navController.navigate(Screen.HomeScreen.route)
     }
 
@@ -28,10 +28,6 @@ fun ConnectScreen(navController: NavController, detailViewModel: DetailViewModel
             .fillMaxWidth()
             .padding(horizontal = 50.dp)
     ) {
-        Text(detailViewModel.connectedState.value)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("ip = ${detailViewModel.ip.value}" )
-        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = detailViewModel.ip.value,
@@ -48,7 +44,7 @@ fun ConnectScreen(navController: NavController, detailViewModel: DetailViewModel
             {
                 detailViewModel.connectedState.value = "connecting..." //todo remove
                 detailViewModel.ip.value = "192.168.1.125" //todo remove
-                if (detailViewModel.isValidIp()) {
+                if (detailViewModel.isValidIp(detailViewModel.ip.value)) {
                     detailViewModel.createRobotMessageService()
                     detailViewModel.sendObserveNotification()
                 }

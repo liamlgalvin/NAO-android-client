@@ -1,4 +1,4 @@
-package com.example.naoandroidclient.ui.navigation
+package com.example.naoandroidclient.ui.detail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 import com.example.naoandroidclient.ui.DetailViewModel
 
 @Composable
-fun DetailScreen(navController: NavController, detailViewModel: DetailViewModel, appId: Long?) {
+fun DetailScreen(detailViewModel: DetailViewModel, appId: Long?) {
     val app = detailViewModel.apps.find { it.id == appId }
     Box(
         contentAlignment = Alignment.Center,
