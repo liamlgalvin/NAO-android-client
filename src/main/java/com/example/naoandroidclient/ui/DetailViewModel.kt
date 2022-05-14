@@ -43,25 +43,26 @@ class DetailViewModel @Inject constructor(
     var apps = SnapshotStateList<App>()
     var searchText =  mutableStateOf("")
 
-
-
-    // TODO: RepositoryListener...
-
-
     var ip =  mutableStateOf(state["ip"] ?: "")
     var message =  mutableStateOf("")
 
 
-    var connectedState =  mutableStateOf("connecting...") // todo some sort of flow data etc
+    var connectedState =  MutableLiveData(state["connectedState"] ?: "")// todo some sort of flow data etc
     val activityNotification: MutableLiveData<ActivityNotification> by lazy { MutableLiveData<ActivityNotification>() }
-
+    var showProgressBar = MutableLiveData(false)
 
     val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
 
+    fun getAppsGrouped() = apps.toList().filter { app -> app.name.contains(searchText.value) }.groupBy { app -> app.name[0] }
 
     fun setIp(ip : String) {
         this.ip.value = ip
         state["ip"] = ip
+    }
+
+    fun setConnectedState(connectedState : String) {
+        this.connectedState.value = connectedState
+        state["connectedState"] = connectedState
     }
 
     fun isValidIp(ip: String): Boolean {
@@ -100,7 +101,7 @@ class DetailViewModel @Inject constructor(
         webSocketService.observeMessage()
             .flowOn(Dispatchers.IO)
             .onEach { message ->
-                updateMessage(message.message)
+                println(message.message)//fixme
             }
             .launchIn(viewModelScope)
 
@@ -111,8 +112,6 @@ class DetailViewModel @Inject constructor(
                 this.apps.addAll(appMapper.map(message.apps))
             }
             .launchIn(viewModelScope)
-
-
     }
 
     private fun onReceiveResponseConnection(response: WebSocket.Event) {
@@ -128,15 +127,21 @@ class DetailViewModel @Inject constructor(
     }
 
     fun completeWebSocketConnection() {
-        connectedState.value = "connected" // todo fix this
+        setConnectedState("connected to ${ip.value}") // todo fix this
         toggleConnectionStatus()
+        toggleProgressBar()
         webSocketService.sendSubscribe(Subscribe())
         sendMessage("get_apps")
         sendMessage("get_status")
     }
 
     fun disconnectWebSocket() {
-        connectedState.value = "connection failed" // todo fix this
+        if (connectionStatus.value == ConnectionStatus.CONNECTED) {
+            setConnectedState("connection lost") // todo fix this
+        } else {
+            setConnectedState("connection failed: check ip") // todo fix this
+        }
+        toggleProgressBar()
         toggleConnectionStatus()
         destroyWebSocket()
         activityNotification.value = ActivityNotification.RESTART
@@ -161,13 +166,17 @@ class DetailViewModel @Inject constructor(
         client.dispatcher.executorService.shutdown()
     }
 
+    fun toggleProgressBar() {
+        showProgressBar.value = !showProgressBar.value!!
+    }
+
     private fun toggleConnectionStatus() {
         connectionStatus.value = when (connectionStatus.value) {
             ConnectionStatus.CONNECTED -> ConnectionStatus.NOT_CONNECTED
             ConnectionStatus.NOT_CONNECTED -> ConnectionStatus.CONNECTED
-            else -> {
-                ConnectionStatus.NOT_CONNECTED}
+            else -> {ConnectionStatus.NOT_CONNECTED}
         }
     }
+
 
 }

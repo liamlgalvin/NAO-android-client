@@ -11,6 +11,7 @@ import com.example.naoandroidclient.ui.DetailViewModel
 import com.example.naoandroidclient.ui.connect.ConnectScreen
 import com.example.naoandroidclient.ui.detail.DetailScreen
 import com.example.naoandroidclient.ui.home.HomeScreen
+import com.example.naoandroidclient.ui.search.SearchScreen
 
 @Composable
 fun Navigation(navController: NavHostController, viewModel: DetailViewModel) {
@@ -26,6 +27,9 @@ fun Navigation(navController: NavHostController, viewModel: DetailViewModel) {
             arguments = listOf(navArgument("appId") { type = NavType.LongType })
         ){backStackEntry ->
             DetailScreen(detailViewModel = viewModel, backStackEntry.arguments?.getLong("appId"))
+        }
+        composable(route = Screen.SearchScreen.route){
+            SearchScreen(navController = navController, detailViewModel = viewModel)
         }
     }
 }

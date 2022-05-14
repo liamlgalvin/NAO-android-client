@@ -1,5 +1,6 @@
 package com.example.naoandroidclient
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity()  {
         if (savedInstanceState != null) {
             // get ip if it has been set on closing
             savedInstanceState.getString("ip")?.let { viewModel.setIp(it) }
+            savedInstanceState.getString("connectedState")?.let { viewModel.connectedState.value = it }
         }
 
         val activityNotificationObserver = createActivityNotificationObserver()
@@ -38,6 +40,8 @@ class MainActivity : ComponentActivity()  {
 
     override fun onDestroy() {
         super.onDestroy()
+
+        // move this to a function in view model
         if (viewModel.connectionStatus.value == ConnectionStatus.CONNECTED) {
             viewModel.sendMessage("destroy_connection", "connection destroyed")
         }
@@ -48,10 +52,7 @@ class MainActivity : ComponentActivity()  {
         return Observer<ActivityNotification> {
             when(it){
                 ActivityNotification.RESTART -> {
-                    val intent = intent
-                    val bundle = Bundle()
-                    bundle.putString("ip", viewModel.ip.value)
-                    intent.putExtras(bundle)
+                    val intent = createIntent()
                     finish()
                     startActivity(intent)
                 }
@@ -62,4 +63,19 @@ class MainActivity : ComponentActivity()  {
 
         }
     }
+
+    private fun createIntent(): Intent {
+        val intent = intent
+        intent.putExtras(createBundle())
+        return intent
+    }
+
+    private fun createBundle(): Bundle {
+        val bundle = Bundle()
+        bundle.putString("ip", viewModel.ip.value)
+        bundle.putString("connectedState",  viewModel.connectedState.value )
+        return bundle
+    }
+
+
 }
