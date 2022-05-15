@@ -13,16 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.naoandroidclient.ui.DetailViewModel
+import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.navigation.Screen
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(navController: NavController, detailViewModel: DetailViewModel) {
+fun HomeScreen(navController: NavController, mainViewModel: MainViewModel) {
 
         LazyColumn {
-            detailViewModel.getAppsGrouped().forEach{ (letter, apps) ->
-
+            mainViewModel.getAppsGrouped().forEach{ (letter, apps) ->
                 stickyHeader {
                     Row(
                         Modifier

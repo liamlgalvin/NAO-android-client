@@ -8,7 +8,7 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.ConnectionStatus
-import com.example.naoandroidclient.ui.DetailViewModel
+import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.main.MainScreen
 import com.example.naoandroidclient.ui.main.NaoApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -16,23 +16,23 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity()  {
 
-    private val viewModel : DetailViewModel by viewModels()
+    private val mainViewModel : MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (savedInstanceState != null) {
-            // get ip if it has been set on closing
-            savedInstanceState.getString("ip")?.let { viewModel.setIp(it) }
-            savedInstanceState.getString("connectedState")?.let { viewModel.connectedState.value = it }
-        }
+//        if (savedInstanceState != null) {
+//            // get ip if it has been set on closing
+//            savedInstanceState.getString("ip")?.let { mainViewModel.setIp(it) }
+//            savedInstanceState.getString("connectedState")?.let { mainViewModel.setConnectedState(it) }
+//        }
 
         val activityNotificationObserver = createActivityNotificationObserver()
-        viewModel.activityNotification.observe(this, activityNotificationObserver)
+        mainViewModel.activityNotification.observe(this, activityNotificationObserver)
 
         setContent {
             NaoApp {
-                MainScreen(viewModel)
+                MainScreen(mainViewModel = mainViewModel)
             }
         }
 
@@ -42,10 +42,10 @@ class MainActivity : ComponentActivity()  {
         super.onDestroy()
 
         // move this to a function in view model
-        if (viewModel.connectionStatus.value == ConnectionStatus.CONNECTED) {
-            viewModel.sendMessage("destroy_connection", "connection destroyed")
+        if (mainViewModel.connectionStatus.value == ConnectionStatus.CONNECTED) {
+            mainViewModel.sendMessage("destroy_connection", "connection destroyed")
         }
-        viewModel.destroyWebSocket()
+        mainViewModel.destroyWebSocket()
     }
 
     private fun createActivityNotificationObserver(): Observer<ActivityNotification> {
@@ -57,8 +57,9 @@ class MainActivity : ComponentActivity()  {
                     startActivity(intent)
                 }
                 ActivityNotification.OBSERVE -> {
-                    viewModel.observeConnection()
+                    mainViewModel.observeConnection()
                 }
+                else -> {}
             }
 
         }
@@ -72,8 +73,8 @@ class MainActivity : ComponentActivity()  {
 
     private fun createBundle(): Bundle {
         val bundle = Bundle()
-        bundle.putString("ip", viewModel.ip.value)
-        bundle.putString("connectedState",  viewModel.connectedState.value )
+        bundle.putString("ip", mainViewModel.ip.value)
+        bundle.putString("connectedState",  mainViewModel.connectedState.value )
         return bundle
     }
 

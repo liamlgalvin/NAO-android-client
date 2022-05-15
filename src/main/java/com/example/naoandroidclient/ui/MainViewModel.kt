@@ -2,19 +2,16 @@ package com.example.naoandroidclient.ui
 
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.*
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
+import com.example.naoandroidclient.repository.AppRepository
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
-import com.example.naoandroidclient.sockets.mapper.AppMapper
 import com.example.naoandroidclient.sockets.RobotMessageService
 import com.example.naoandroidclient.sockets.dto.Message
 import com.example.naoandroidclient.sockets.dto.Subscribe
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapter
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Scarlet
 import com.tinder.scarlet.WebSocket
@@ -29,31 +26,32 @@ import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
     private val state: SavedStateHandle,
     private var client: OkHttpClient,
     private var moshi: Moshi,
     private var lifecycle: Lifecycle,
+    private var appRepository: AppRepository
 ): ViewModel() {
 
     private lateinit var webSocketService: RobotMessageService
-
-    // todo move
-    private val appMapper = AppMapper()
-    var apps = SnapshotStateList<App>()
-    var searchText =  mutableStateOf("")
 
     var ip =  mutableStateOf(state["ip"] ?: "")
     var message =  mutableStateOf("")
 
 
-    var connectedState =  MutableLiveData(state["connectedState"] ?: "")// todo some sort of flow data etc
+    var connectedState = state.getLiveData<String>("connectedState")
+    var previousConnectedState = mutableStateOf("")
+
+    fun getConnectedState() : String? {
+        previousConnectedState.value = connectedState.value.toString()
+        return connectedState.value
+    }
     val activityNotification: MutableLiveData<ActivityNotification> by lazy { MutableLiveData<ActivityNotification>() }
     var showProgressBar = MutableLiveData(false)
 
     val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
 
-    fun getAppsGrouped() = apps.toList().filter { app -> app.name.contains(searchText.value) }.groupBy { app -> app.name[0] }
 
     fun setIp(ip : String) {
         this.ip.value = ip
@@ -62,7 +60,7 @@ class DetailViewModel @Inject constructor(
 
     fun setConnectedState(connectedState : String) {
         this.connectedState.value = connectedState
-        state["connectedState"] = connectedState
+        //state["connectedState"] = connectedState
     }
 
     fun isValidIp(ip: String): Boolean {
@@ -81,12 +79,6 @@ class DetailViewModel @Inject constructor(
 
     fun sendMessage(type: String, message: String) {
         webSocketService.sendMessage(Message(type, message))
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    fun jsonifyApp(appToConvert: App): String {
-        val jsonAdapter: JsonAdapter<com.example.naoandroidclient.sockets.dto.App> = moshi.adapter()
-        return jsonAdapter.toJson(appMapper.map(appToConvert))
     }
 
 
@@ -108,8 +100,9 @@ class DetailViewModel @Inject constructor(
         webSocketService.observeApps()
             .flowOn(Dispatchers.IO)
             .onEach { message ->
-                this.apps.removeAll(apps)
-                this.apps.addAll(appMapper.map(message.apps))
+                // fixme:
+                appRepository.apps.removeAll(appRepository.apps)
+                appRepository.apps.addAll(appRepository.appMapper.map(message.apps))
             }
             .launchIn(viewModelScope)
     }
@@ -130,7 +123,7 @@ class DetailViewModel @Inject constructor(
         setConnectedState("connected to ${ip.value}") // todo fix this
         toggleConnectionStatus()
         toggleProgressBar()
-        webSocketService.sendSubscribe(Subscribe())
+        webSocketService.sendSubscribe(Subscribe()) //fixme: necessary??
         sendMessage("get_apps")
         sendMessage("get_status")
     }
@@ -141,8 +134,8 @@ class DetailViewModel @Inject constructor(
         } else {
             setConnectedState("connection failed: check ip") // todo fix this
         }
-        toggleProgressBar()
         toggleConnectionStatus()
+        toggleProgressBar()
         destroyWebSocket()
         activityNotification.value = ActivityNotification.RESTART
     }
@@ -178,5 +171,21 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+
+
+    // App related Stuff
+
+    fun getAppsGrouped() = appRepository.getAppsGrouped()
+
+    fun getAppById(appId: Long) = appRepository.apps.find { it.id == appId }
+
+    fun setSearchText(searchText: String) {
+        appRepository.searchText.value = searchText
+    }
+    fun getSearchText() = appRepository.searchText.value
+
+    fun jsonifyApp(appToConvert: App) = appRepository.jsonifyApp(appToConvert = appToConvert)
+
+    // App related Stuff
 
 }

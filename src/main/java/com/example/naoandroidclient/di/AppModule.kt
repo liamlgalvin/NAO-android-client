@@ -3,6 +3,8 @@ package com.example.naoandroidclient.di
 import android.app.Application
 import android.content.Context
 import com.example.naoandroidclient.MainApplication
+import com.example.naoandroidclient.sockets.mapper.AppMapper
+import com.example.naoandroidclient.repository.AppRepository
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
@@ -35,4 +37,10 @@ class AppModule {
     fun provideHttpClient() = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
         .build()
+
+    @Provides
+    fun providesAppMapper() = AppMapper()
+
+    @Provides
+    fun providesAppRepository(moshi: Moshi, appMapper: AppMapper) = AppRepository(moshi = moshi, appMapper = appMapper)
 }

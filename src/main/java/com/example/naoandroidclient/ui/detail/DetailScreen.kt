@@ -8,12 +8,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import com.example.naoandroidclient.ui.DetailViewModel
+import com.example.naoandroidclient.ui.MainViewModel
 
 @Composable
-fun DetailScreen(detailViewModel: DetailViewModel, appId: Long?) {
-    val app = detailViewModel.apps.find { it.id == appId }
+fun DetailScreen(mainViewModel: MainViewModel, appId: Long) {
+
+    val app = mainViewModel.getAppById(appId)
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
@@ -25,8 +26,8 @@ fun DetailScreen(detailViewModel: DetailViewModel, appId: Long?) {
             Button(
                 onClick =
                 {
-                    detailViewModel.sendMessage("start_app", "${app?.let { app ->
-                        detailViewModel.jsonifyApp(app) }}")
+                    mainViewModel.sendMessage("start_app", "${app?.let { app ->
+                        mainViewModel.jsonifyApp(app) }}")
                 }
             ) {
                 Text(text = "start app")
