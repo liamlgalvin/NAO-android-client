@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
-import com.example.naoandroidclient.repository.AppRepository
+import com.example.naoandroidclient.data.repository.AppRepository
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
 import com.example.naoandroidclient.sockets.RobotMessageService

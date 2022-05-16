@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.example.naoandroidclient.MainApplication
 import com.example.naoandroidclient.sockets.mapper.AppMapper
-import com.example.naoandroidclient.repository.AppRepository
+import com.example.naoandroidclient.data.repository.AppRepository
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.lifecycle.android.AndroidLifecycle

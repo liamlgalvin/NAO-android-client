@@ -1,4 +1,4 @@
-package com.example.naoandroidclient.repository
+package com.example.naoandroidclient.data.repository
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -22,7 +22,7 @@ class AppRepository (
         app.name.contains(searchText.value)
     }.groupBy { app -> app.name[0] }
 
-    @OptIn(ExperimentalStdlibApi::class)
+    @OptIn(ExperimentalStdlibApi::class) // doesnt go here
     fun jsonifyApp(appToConvert: App): String {
         val jsonAdapter: JsonAdapter<com.example.naoandroidclient.sockets.dto.App> = moshi.adapter()
         return jsonAdapter.toJson(appMapper.map(appToConvert))
