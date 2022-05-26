@@ -13,6 +13,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
@@ -42,5 +44,6 @@ class AppModule {
     fun providesAppMapper() = AppMapper()
 
     @Provides
-    fun providesAppRepository(moshi: Moshi, appMapper: AppMapper) = AppRepository(moshi = moshi, appMapper = appMapper)
+    fun providesAppRepository(appMapper: AppMapper) = AppRepository(appMapper = appMapper)
+
 }

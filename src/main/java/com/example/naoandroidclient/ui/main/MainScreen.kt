@@ -12,14 +12,21 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
+import com.example.naoandroidclient.ui.connect.ConnectViewModel
+import com.example.naoandroidclient.ui.main.topbar.MainAppBarViewModel
 import com.example.naoandroidclient.ui.navigation.Navigation
+import com.example.naoandroidclient.ui.search.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen (mainViewModel: MainViewModel) {
+fun MainScreen (mainViewModel: MainViewModel,
+                searchViewModel: SearchViewModel,
+                connectViewModel: ConnectViewModel,
+                mainAppBarViewModel: MainAppBarViewModel
+) {
 
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
     val scope = rememberCoroutineScope()
@@ -32,8 +39,9 @@ fun MainScreen (mainViewModel: MainViewModel) {
 
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { MainAppBar( viewModel = mainViewModel, scaffoldState = scaffoldState, scope = scope, navController = navController)
+        topBar = { MainAppBar( mainAppBarViewModel = mainAppBarViewModel, scaffoldState = scaffoldState, scope = scope, navController = navController)
         },
+        bottomBar = {BottomBar(mainViewModel = mainViewModel)},
         drawerContent = { DrawerContent(viewModel = mainViewModel) }) {
 
 
@@ -47,7 +55,11 @@ fun MainScreen (mainViewModel: MainViewModel) {
             true -> LinearProgressIndicator(Modifier.fillMaxWidth())
         }
 
-        Navigation(navController, mainViewModel)
+        Navigation( navController = navController,
+            mainViewModel = mainViewModel,
+            searchViewModel = searchViewModel,
+            connectViewModel = connectViewModel
+        )
 
     }
 }

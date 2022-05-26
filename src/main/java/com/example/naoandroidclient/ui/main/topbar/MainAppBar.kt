@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.naoandroidclient.R
 import com.example.naoandroidclient.ui.MainViewModel
+import com.example.naoandroidclient.ui.main.topbar.MainAppBarViewModel
 import com.example.naoandroidclient.ui.navigation.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MainAppBar(
-    viewModel: MainViewModel,
+    mainAppBarViewModel: MainAppBarViewModel,
     scaffoldState: ScaffoldState,
     scope: CoroutineScope,
     navController: NavHostController
@@ -37,17 +38,17 @@ fun MainAppBar(
     TopAppBar(
         title = {
                 Text(text = stringResource(id = R.string.app_name))
-            },
+                },
         navigationIcon =  {
-            NavigationIcon(navController = navController, currentBackStackEntry = currentBackStackEntry)
-        },
-     actions =  {
+            NavigationIcon(mainAppBarViewModel = mainAppBarViewModel, navController = navController, currentBackStackEntry = currentBackStackEntry)
+                          },
+        actions =  {
 
-         SearchIcon(navController = navController, currentBackStackEntry = currentBackStackEntry)
+             SearchIcon(mainAppBarViewModel = mainAppBarViewModel, navController = navController, currentBackStackEntry = currentBackStackEntry)
 
-         TopBarAction(imageVector = Icons.Default.Menu, onClick = {
-             scope.launch { scaffoldState.drawerState.open() }
-         }, description = "menu")
+             TopBarAction(imageVector = Icons.Default.Menu, onClick = {
+                 scope.launch { scaffoldState.drawerState.open() }
+             }, description = "menu")
          }
     )
 }
@@ -66,9 +67,9 @@ private fun TopBarAction( //todo change this
 }
 
 @Composable
-fun NavigationIcon(navController: NavHostController, currentBackStackEntry: NavBackStackEntry?) {
+fun NavigationIcon(mainAppBarViewModel: MainAppBarViewModel, navController: NavHostController, currentBackStackEntry: NavBackStackEntry?) {
 
-    if (currentBackStackEntry?.destination?.route?.let { showNavigationIcon(it) } == false) return
+    if (currentBackStackEntry?.destination?.route?.let { mainAppBarViewModel.showNavigationIcon(it) } == false) return
 
     return IconButton(onClick = { navController.popBackStack() }) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "back")
@@ -76,32 +77,12 @@ fun NavigationIcon(navController: NavHostController, currentBackStackEntry: NavB
 }
 
 @Composable
-fun SearchIcon(navController: NavHostController, currentBackStackEntry: NavBackStackEntry?) {
+fun SearchIcon(mainAppBarViewModel: MainAppBarViewModel, navController: NavHostController, currentBackStackEntry: NavBackStackEntry?) {
 
-    if (currentBackStackEntry?.destination?.route?.let { showSearchIcon(it) } == false) return
+    if (currentBackStackEntry?.destination?.route?.let { mainAppBarViewModel.showSearchIcon(it) } == false) return
 
     return IconButton(onClick = { navController.navigate(Screen.SearchScreen.route)}) {
         Icon(Icons.Default.Search, contentDescription = "back")
     }
-}
-
-fun showSearchIcon(currentRoute: String) : Boolean {
-    // move to viewModel
-    var pagesToShowSearch = listOf<String>(Screen.HomeScreen.route, Screen.DetailScreen.route)
-
-    pagesToShowSearch.forEach { page ->
-        if (currentRoute.contains(page, ignoreCase = true)) return true
-    }
-    return false
-}
-
-fun showNavigationIcon(currentRoute: String) : Boolean {
-    // move to viewModel
-    var pagesToShowNavigation = listOf<String>(Screen.DetailScreen.route,Screen.SearchScreen.route)
-
-    pagesToShowNavigation.forEach { page ->
-        if (currentRoute.contains(page, ignoreCase = true)) return true
-    }
-    return false
 }
 

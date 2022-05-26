@@ -20,8 +20,10 @@ import com.example.naoandroidclient.ui.navigation.Screen
 @Composable
 fun HomeScreen(navController: NavController, mainViewModel: MainViewModel) {
 
+   // var homeViewModel = HomeViewModel()
+
         LazyColumn {
-            mainViewModel.getAppsGrouped().forEach{ (letter, apps) ->
+            mainViewModel.getAllAppsGrouped().forEach{ (letter, apps) ->
                 stickyHeader {
                     Row(
                         Modifier

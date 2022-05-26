@@ -1,5 +1,5 @@
 package com.example.naoandroidclient.domain
 
 enum class ActivityNotification {
-    RESTART, OBSERVE
+    RESTART, OBSERVE, CREATE_CONNECTION
 }

@@ -7,11 +7,15 @@ import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
 import com.example.naoandroidclient.data.repository.AppRepository
 import com.example.naoandroidclient.domain.ConnectionStatus
+import com.example.naoandroidclient.domain.RobotStatus
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
 import com.example.naoandroidclient.sockets.RobotMessageService
 import com.example.naoandroidclient.sockets.dto.Message
 import com.example.naoandroidclient.sockets.dto.Subscribe
+import com.example.naoandroidclient.sockets.mapper.RobotStatusMapper
+import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Scarlet
 import com.tinder.scarlet.WebSocket
@@ -31,14 +35,15 @@ class MainViewModel @Inject constructor(
     private var client: OkHttpClient,
     private var moshi: Moshi,
     private var lifecycle: Lifecycle,
-    private var appRepository: AppRepository
+    private var appRepository: AppRepository,
 ): ViewModel() {
 
-    private lateinit var webSocketService: RobotMessageService
+    private val robotStatusMapper: RobotStatusMapper = RobotStatusMapper()
+    lateinit var webSocketService: RobotMessageService
 
-    var ip =  mutableStateOf(state["ip"] ?: "")
-    var message =  mutableStateOf("")
-
+    var robotStatus =  state.getLiveData<RobotStatus>("robotStatus" , RobotStatus.NO_APP_RUNNING)
+    var message =  state.getLiveData<String>("message")
+    var currentApp =  state.getLiveData<App>("currentApp")
 
     var connectedState = state.getLiveData<String>("connectedState")
     var previousConnectedState = mutableStateOf("")
@@ -52,21 +57,8 @@ class MainViewModel @Inject constructor(
 
     val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
 
-
-    fun setIp(ip : String) {
-        this.ip.value = ip
-        state["ip"] = ip
-    }
-
     fun setConnectedState(connectedState : String) {
         this.connectedState.value = connectedState
-        //state["connectedState"] = connectedState
-    }
-
-    fun isValidIp(ip: String): Boolean {
-        if (ip == "") return false
-        val regex = Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\$")
-        return regex.matches(ip)
     }
 
     fun updateMessage(message: String) {
@@ -78,7 +70,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun sendMessage(type: String, message: String) {
-        webSocketService.sendMessage(Message(type, message))
+        webSocketService.sendMessage(Message(type, "", "", message))
     }
 
 
@@ -93,9 +85,9 @@ class MainViewModel @Inject constructor(
         webSocketService.observeMessage()
             .flowOn(Dispatchers.IO)
             .onEach { message ->
-                println(message.message)//fixme
+                handleMessage(message)
             }
-            .launchIn(viewModelScope)
+           .launchIn(viewModelScope)
 
         webSocketService.observeApps()
             .flowOn(Dispatchers.IO)
@@ -105,6 +97,21 @@ class MainViewModel @Inject constructor(
                 appRepository.apps.addAll(appRepository.appMapper.map(message.apps))
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun handleMessage(message: Message) {
+        // todo
+        if (message.type == "error") println("ERROR!!!")
+        when (message.type) {
+            "error" -> {
+                println("ERROR!!! ${message.message}")
+                this.message.value = message.message
+            }
+            else -> this.message.value = message.message
+        }
+        println(message.robotStatus)
+        this.robotStatus.value = robotStatusMapper.map(message.robotStatus)
+        this.currentApp.value = if (message.currentAppId != "") appRepository.getAppById(message.currentAppId.toLong()) else App(0,"","","")
     }
 
     private fun onReceiveResponseConnection(response: WebSocket.Event) {
@@ -120,12 +127,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun completeWebSocketConnection() {
-        setConnectedState("connected to ${ip.value}") // todo fix this
+        setConnectedState("connected to robot") // todo fix this
         toggleConnectionStatus()
         toggleProgressBar()
         webSocketService.sendSubscribe(Subscribe()) //fixme: necessary??
         sendMessage("get_apps")
-        sendMessage("get_status")
     }
 
     fun disconnectWebSocket() {
@@ -140,9 +146,9 @@ class MainViewModel @Inject constructor(
         activityNotification.value = ActivityNotification.RESTART
     }
 
-    fun createRobotMessageService() {
+    fun createRobotMessageService(ip: String) {
         val scarlet = Scarlet.Builder()
-            .webSocketFactory(client.newWebSocketFactory("ws://${ip.value}:8001"))
+            .webSocketFactory(client.newWebSocketFactory("ws://${ip}:8001"))
             .addMessageAdapterFactory(MoshiMessageAdapter.Factory(moshi))
             .addStreamAdapterFactory(FlowStreamAdapter.Factory())
             .lifecycle(lifecycle)
@@ -151,6 +157,9 @@ class MainViewModel @Inject constructor(
         webSocketService = scarlet.create()
     }
 
+    fun sendCreateNotification() {
+        activityNotification.value = ActivityNotification.CREATE_CONNECTION
+    }
     fun sendObserveNotification() {
         activityNotification.value = ActivityNotification.OBSERVE
     }
@@ -172,20 +181,18 @@ class MainViewModel @Inject constructor(
     }
 
 
-
     // App related Stuff
 
-    fun getAppsGrouped() = appRepository.getAppsGrouped()
+    fun getAppsGroupedFiltered(searchText: String) = appRepository.getAppsAlphabetisedGroupedFiltered(searchText)
+    fun getAllAppsGrouped() = appRepository.getAppsAlphabetisedGrouped()
 
-    fun getAppById(appId: Long) = appRepository.apps.find { it.id == appId }
+    fun getAppById(appId: Long) = appRepository.getAppById(appId)
 
-    fun setSearchText(searchText: String) {
-        appRepository.searchText.value = searchText
+    @OptIn(ExperimentalStdlibApi::class)
+    fun jsonifyApp(appToConvert: App): String {
+        val jsonAdapter: JsonAdapter<com.example.naoandroidclient.sockets.dto.App> = moshi.adapter()
+        return jsonAdapter.toJson(appRepository.appMapper.map(appToConvert))
     }
-    fun getSearchText() = appRepository.searchText.value
-
-    fun jsonifyApp(appToConvert: App) = appRepository.jsonifyApp(appToConvert = appToConvert)
 
     // App related Stuff
-
 }

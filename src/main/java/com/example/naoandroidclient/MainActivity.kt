@@ -9,14 +9,20 @@ import androidx.lifecycle.Observer
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
+import com.example.naoandroidclient.ui.connect.ConnectViewModel
 import com.example.naoandroidclient.ui.main.MainScreen
 import com.example.naoandroidclient.ui.main.NaoApp
+import com.example.naoandroidclient.ui.main.topbar.MainAppBarViewModel
+import com.example.naoandroidclient.ui.search.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity()  {
 
     private val mainViewModel : MainViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
+    private val connectViewModel: ConnectViewModel by viewModels()
+    private val mainAppBarViewModel: MainAppBarViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +38,11 @@ class MainActivity : ComponentActivity()  {
 
         setContent {
             NaoApp {
-                MainScreen(mainViewModel = mainViewModel)
+                MainScreen(mainViewModel = mainViewModel,
+                    searchViewModel = searchViewModel,
+                    connectViewModel = connectViewModel,
+                    mainAppBarViewModel = mainAppBarViewModel
+                )
             }
         }
 
@@ -66,17 +76,16 @@ class MainActivity : ComponentActivity()  {
     }
 
     private fun createIntent(): Intent {
-        val intent = intent
-        intent.putExtras(createBundle())
+        //intent.putExtras(createBundle())
         return intent
     }
 
-    private fun createBundle(): Bundle {
-        val bundle = Bundle()
-        bundle.putString("ip", mainViewModel.ip.value)
-        bundle.putString("connectedState",  mainViewModel.connectedState.value )
-        return bundle
-    }
+//    private fun createBundle(): Bundle {
+//        val bundle = Bundle()
+//        bundle.putString("ip", mainViewModel.ip.value)
+//        bundle.putString("connectedState",  mainViewModel.connectedState.value )
+//        return bundle
+//    }
 
 
 }

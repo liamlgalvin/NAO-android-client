@@ -8,8 +8,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -27,14 +30,15 @@ import com.example.naoandroidclient.ui.navigation.Screen
 @Composable
 fun SearchScreen(navController: NavController,
                  mainViewModel: MainViewModel,
+                 searchViewModel: SearchViewModel,
                  focusManager: FocusManager = LocalFocusManager.current) {
 
     Column() {
 
         Row() {
             OutlinedTextField(
-                value = mainViewModel.getSearchText(),
-                onValueChange = { searchText -> mainViewModel.setSearchText(searchText)},
+                value = searchViewModel.searchText.value,
+                onValueChange = { searchText -> searchViewModel.searchText.value = searchText},
                 label = { Text("search") },
                 keyboardActions = KeyboardActions(onSearch = {
                     focusManager.clearFocus()
@@ -43,38 +47,63 @@ fun SearchScreen(navController: NavController,
                     autoCorrect = false,
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search
-                        )
+                        ),
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = "clear text",
+                        modifier = Modifier
+                            .clickable {
+                                searchViewModel.searchText.value = ""
+                            }
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(8.dp))
         }
 
 
-        LazyColumn {
-            mainViewModel.getAppsGrouped().forEach{ (letter, apps) ->
+        SearchResults(
+            searchViewModel, mainViewModel, navController
+        )
+    }
+}
 
-                stickyHeader {
-                    Row(
-                        Modifier
-                            .background(Color.Gray)
-                            .fillMaxWidth()
-                    ) {
-                        Text(text = letter.toString(), fontSize = 30.sp)
-                    }
-                }
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SearchResults(
+    searchViewModel: SearchViewModel,
+    mainViewModel: MainViewModel,
+    navController: NavController
+) {
+    if (searchViewModel.searchText.value == "") return
 
-                items(apps) { app ->
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                navController.navigate(Screen.DetailScreen.route + "/${app.id}")
-                            }) {
-                        Text(text = app.name, fontSize = 30.sp)
-                        }
+    LazyColumn {
+        mainViewModel.getAppsGroupedFiltered(searchViewModel.searchText.value).forEach{ (letter, apps) ->
 
+            stickyHeader {
+                Row(
+                    Modifier
+                        .background(Color.Gray)
+                        .fillMaxWidth()
+                ) {
+                    Text(text = letter.toString(), fontSize = 30.sp)
                 }
             }
 
+            items(apps) { app ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            navController.navigate(Screen.DetailScreen.route + "/${app.id}")
+                        }) {
+                    Text(text = app.name, fontSize = 30.sp)
+                }
+
+            }
         }
+
     }
+
 }
