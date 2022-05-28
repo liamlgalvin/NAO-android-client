@@ -8,8 +8,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.naoandroidclient.R
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
 
@@ -37,7 +39,7 @@ fun DisconnectedMenu(viewModel: MainViewModel) {
         .fillMaxWidth()
         .clickable {
         }) {
-        Text(text = "about", fontSize = 30.sp)
+        Text(text = stringResource(id = R.string.about), fontSize = 30.sp)
     }
 
 }
@@ -49,13 +51,13 @@ fun ConnectedMenu(viewModel: MainViewModel) {
         .clickable {
             viewModel.disconnectWebSocket()
         }) {
-        Text(text = "disconnect", fontSize = 30.sp)
+        Text(text = stringResource(id = R.string.disconnect), fontSize = 30.sp)
     }
     Row(Modifier
         .fillMaxWidth()
         .clickable {
         }) {
-        Text(text = "about", fontSize = 30.sp)
+        Text(text = stringResource(id = R.string.about), fontSize = 30.sp)
     }
 }
 

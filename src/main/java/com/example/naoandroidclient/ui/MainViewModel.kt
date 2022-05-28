@@ -43,20 +43,21 @@ class MainViewModel @Inject constructor(
 
     var robotStatus =  state.getLiveData<RobotStatus>("robotStatus" , RobotStatus.NO_APP_RUNNING)
     var message =  state.getLiveData<String>("message")
+    var errorMessage =  state.getLiveData<String>("errorMessage")
     var currentApp =  state.getLiveData<App>("currentApp")
 
     var connectedState = state.getLiveData<String>("connectedState")
     var previousConnectedState = mutableStateOf("")
 
+    val activityNotification: MutableLiveData<ActivityNotification> by lazy { MutableLiveData<ActivityNotification>() }
+
+    var showProgressBar = MutableLiveData(false)
+    val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
+
     fun getConnectedState() : String? {
         previousConnectedState.value = connectedState.value.toString()
         return connectedState.value
     }
-    val activityNotification: MutableLiveData<ActivityNotification> by lazy { MutableLiveData<ActivityNotification>() }
-    var showProgressBar = MutableLiveData(false)
-
-    val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
-
 
     fun sendMessage(type: String) {
         sendMessage(type, "")
@@ -65,7 +66,6 @@ class MainViewModel @Inject constructor(
     fun sendMessage(type: String, message: String) {
         webSocketService.sendMessage(Message(type, "", "", message))
     }
-
 
     fun observeConnection() {
         webSocketService.observeWebSocket()
