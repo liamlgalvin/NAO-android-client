@@ -10,7 +10,9 @@ import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.connect.ConnectScreen
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
 import com.example.naoandroidclient.ui.detail.DetailScreen
+import com.example.naoandroidclient.ui.detail.DetailViewModel
 import com.example.naoandroidclient.ui.home.HomeScreen
+import com.example.naoandroidclient.ui.home.HomeViewModel
 import com.example.naoandroidclient.ui.search.SearchScreen
 import com.example.naoandroidclient.ui.search.SearchViewModel
 
@@ -19,7 +21,9 @@ fun Navigation(
     navController: NavHostController,
     mainViewModel: MainViewModel,
     searchViewModel: SearchViewModel,
-    connectViewModel: ConnectViewModel
+    connectViewModel: ConnectViewModel,
+    homeViewModel: HomeViewModel,
+    detailViewModel: DetailViewModel
 ) {
 
     NavHost(navController = navController, startDestination = Screen.ConnectScreen.route) {
@@ -27,16 +31,16 @@ fun Navigation(
             ConnectScreen(navController = navController, mainViewModel = mainViewModel, connectViewModel = connectViewModel)
         }
         composable(route = Screen.HomeScreen.route){
-            HomeScreen(navController = navController, mainViewModel = mainViewModel)
+            HomeScreen(navController = navController, mainViewModel = mainViewModel, homeViewModel = homeViewModel)
         }
         composable(route = "${Screen.DetailScreen.route}/{appId}",
             arguments = listOf(navArgument("appId") { type = NavType.LongType })
         ){backStackEntry ->
             backStackEntry.arguments?.getLong("appId")
-                ?.let { appId -> DetailScreen(mainViewModel = mainViewModel, appId) }
+                ?.let { appId -> DetailScreen(detailViewModel = detailViewModel, mainViewModel = mainViewModel, appId) }
         }
         composable(route = Screen.SearchScreen.route){
-            SearchScreen(navController = navController, mainViewModel = mainViewModel, searchViewModel = searchViewModel)
+            SearchScreen(navController = navController, searchViewModel = searchViewModel)
         }
     }
 }

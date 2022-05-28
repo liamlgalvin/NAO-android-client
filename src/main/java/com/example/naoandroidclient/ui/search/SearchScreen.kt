@@ -23,13 +23,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.navigation.Screen
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchScreen(navController: NavController,
-                 mainViewModel: MainViewModel,
                  searchViewModel: SearchViewModel,
                  focusManager: FocusManager = LocalFocusManager.current) {
 
@@ -64,7 +62,7 @@ fun SearchScreen(navController: NavController,
 
 
         SearchResults(
-            searchViewModel, mainViewModel, navController
+            searchViewModel, navController
         )
     }
 }
@@ -73,14 +71,13 @@ fun SearchScreen(navController: NavController,
 @Composable
 fun SearchResults(
     searchViewModel: SearchViewModel,
-    mainViewModel: MainViewModel,
     navController: NavController
 ) {
     if (searchViewModel.searchText.value == "") return
 
     LazyColumn {
-        mainViewModel.getAppsGroupedFiltered(searchViewModel.searchText.value).forEach{ (letter, apps) ->
-
+        searchViewModel.getAppsGroupedFiltered(searchViewModel.searchText.value).forEach{
+                (letter, apps) ->
             stickyHeader {
                 Row(
                     Modifier

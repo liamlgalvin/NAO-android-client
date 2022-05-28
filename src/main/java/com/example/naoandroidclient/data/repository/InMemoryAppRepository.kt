@@ -5,14 +5,13 @@ import com.example.naoandroidclient.domain.App
 import com.example.naoandroidclient.domain.AppRepository
 import com.example.naoandroidclient.sockets.mapper.AppMapper
 import dagger.hilt.android.scopes.ActivityScoped
-import javax.inject.Singleton
+import javax.inject.Inject
 
-@Singleton
 @ActivityScoped
-class AppRepository (
-    val appMapper: AppMapper
+class InMemoryAppRepository  @Inject constructor(
 ) : AppRepository {
 
+    val appMapper = AppMapper()
     var apps = SnapshotStateList<App>()
 
     override fun getAppsAlphabetisedGroupedFiltered(searchText: String): Map<Char, List<App>> {

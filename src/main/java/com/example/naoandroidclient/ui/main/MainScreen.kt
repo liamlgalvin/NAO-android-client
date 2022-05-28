@@ -13,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
+import com.example.naoandroidclient.ui.detail.DetailViewModel
+import com.example.naoandroidclient.ui.home.HomeViewModel
 import com.example.naoandroidclient.ui.main.topbar.MainAppBarViewModel
 import com.example.naoandroidclient.ui.navigation.Navigation
 import com.example.naoandroidclient.ui.search.SearchViewModel
@@ -25,7 +27,9 @@ import kotlinx.coroutines.launch
 fun MainScreen (mainViewModel: MainViewModel,
                 searchViewModel: SearchViewModel,
                 connectViewModel: ConnectViewModel,
-                mainAppBarViewModel: MainAppBarViewModel
+                mainAppBarViewModel: MainAppBarViewModel,
+                homeViewModel: HomeViewModel,
+                detailViewModel: DetailViewModel
 ) {
 
     val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
@@ -58,7 +62,9 @@ fun MainScreen (mainViewModel: MainViewModel,
         Navigation( navController = navController,
             mainViewModel = mainViewModel,
             searchViewModel = searchViewModel,
-            connectViewModel = connectViewModel
+            connectViewModel = connectViewModel,
+            homeViewModel = homeViewModel,
+            detailViewModel = detailViewModel
         )
 
     }

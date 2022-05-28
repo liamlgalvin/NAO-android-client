@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import com.example.naoandroidclient.ui.MainViewModel
 
 @Composable
-fun DetailScreen(mainViewModel: MainViewModel, appId: Long) {
+fun DetailScreen(detailViewModel: DetailViewModel, mainViewModel: MainViewModel, appId: Long) {
 
-    val app = mainViewModel.getAppById(appId)
+    val app = detailViewModel.getAppById(appId)
 
-    val message by mainViewModel.message.observeAsState()
+    val message by mainViewModel.message.observeAsState() // todo: his will be removed
 
     Box(
         contentAlignment = Alignment.Center,

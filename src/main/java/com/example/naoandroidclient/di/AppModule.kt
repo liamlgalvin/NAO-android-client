@@ -3,8 +3,7 @@ package com.example.naoandroidclient.di
 import android.app.Application
 import android.content.Context
 import com.example.naoandroidclient.MainApplication
-import com.example.naoandroidclient.sockets.mapper.AppMapper
-import com.example.naoandroidclient.data.repository.AppRepository
+import com.example.naoandroidclient.data.repository.InMemoryAppRepository
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
@@ -13,10 +12,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import javax.inject.Singleton
 
 
 @Module
@@ -40,10 +38,22 @@ class AppModule {
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
         .build()
 
-    @Provides
-    fun providesAppMapper() = AppMapper()
+//    @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
+//    @Provides
+//    fun provideYourDatabase(
+//        @ApplicationContext app: Context
+//    ) = Room.databaseBuilder(
+//        app,
+//        YourDatabase::class.java,
+//        "your_db_name"
+//    ).build() // The reason we can construct a database for the repo
+//
+//    @Singleton
+//    @Provides
+//    fun provideYourDao(db: YourDatabase) = db.getYourDao() // The reason we can implement a Dao for the database
 
+    @Singleton
     @Provides
-    fun providesAppRepository(appMapper: AppMapper) = AppRepository(appMapper = appMapper)
+    fun providesAppRepository() = InMemoryAppRepository()
 
 }

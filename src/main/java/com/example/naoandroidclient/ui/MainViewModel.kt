@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
-import com.example.naoandroidclient.data.repository.AppRepository
+import com.example.naoandroidclient.data.repository.InMemoryAppRepository
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.domain.RobotStatus
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
@@ -31,11 +31,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val state: SavedStateHandle,
+    state: SavedStateHandle,
     private var client: OkHttpClient,
     private var moshi: Moshi,
     private var lifecycle: Lifecycle,
-    private var appRepository: AppRepository,
+    private var appRepository: InMemoryAppRepository,
 ): ViewModel() {
 
     private val robotStatusMapper: RobotStatusMapper = RobotStatusMapper()
@@ -57,13 +57,6 @@ class MainViewModel @Inject constructor(
 
     val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
 
-    fun setConnectedState(connectedState : String) {
-        this.connectedState.value = connectedState
-    }
-
-    fun updateMessage(message: String) {
-        this.message.value = message
-    }
 
     fun sendMessage(type: String) {
         sendMessage(type, "")
@@ -101,7 +94,6 @@ class MainViewModel @Inject constructor(
 
     private fun handleMessage(message: Message) {
         // todo
-        if (message.type == "error") println("ERROR!!!")
         when (message.type) {
             "error" -> {
                 println("ERROR!!! ${message.message}")
@@ -127,7 +119,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun completeWebSocketConnection() {
-        setConnectedState("connected to robot") // todo fix this
+        this.connectedState.value = "connected to robot" // todo fix this
         toggleConnectionStatus()
         toggleProgressBar()
         webSocketService.sendSubscribe(Subscribe()) //fixme: necessary??
@@ -136,9 +128,9 @@ class MainViewModel @Inject constructor(
 
     fun disconnectWebSocket() {
         if (connectionStatus.value == ConnectionStatus.CONNECTED) {
-            setConnectedState("connection lost") // todo fix this
+            this.connectedState.value ="connection lost" // todo fix this
         } else {
-            setConnectedState("connection failed: check ip") // todo fix this
+            this.connectedState.value ="connection failed: check ip" // todo fix this
         }
         toggleConnectionStatus()
         toggleProgressBar()
@@ -180,19 +172,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-
-    // App related Stuff
-
-    fun getAppsGroupedFiltered(searchText: String) = appRepository.getAppsAlphabetisedGroupedFiltered(searchText)
-    fun getAllAppsGrouped() = appRepository.getAppsAlphabetisedGrouped()
-
-    fun getAppById(appId: Long) = appRepository.getAppById(appId)
+    // sending message stuff
 
     @OptIn(ExperimentalStdlibApi::class)
     fun jsonifyApp(appToConvert: App): String {
         val jsonAdapter: JsonAdapter<com.example.naoandroidclient.sockets.dto.App> = moshi.adapter()
         return jsonAdapter.toJson(appRepository.appMapper.map(appToConvert))
     }
-
-    // App related Stuff
 }
