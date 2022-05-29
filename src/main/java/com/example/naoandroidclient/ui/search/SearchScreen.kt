@@ -14,10 +14,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.naoandroidclient.R
+import com.example.naoandroidclient.ui.image.SmallLogoImage
 import com.example.naoandroidclient.ui.navigation.Screen
 
 @Composable
@@ -139,7 +141,16 @@ private fun AppLazyColumn(
                             .clickable {
                                 navController.navigate("${Screen.DetailScreen.route}/${app.id}")
                             }) {
-                        Text(text = app.name, fontSize = 30.sp) // todo: improve
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+
+                            app.getImageBitmap()?.let {
+                                    bitmap ->
+                                SmallLogoImage(bitmap)
+                            }
+
+                            Text(text = app.name, fontSize = 30.sp)
+
+                        }
                     }
 
                 }

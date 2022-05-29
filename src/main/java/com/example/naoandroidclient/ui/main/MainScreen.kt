@@ -15,6 +15,8 @@ import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
 import com.example.naoandroidclient.ui.detail.DetailViewModel
 import com.example.naoandroidclient.ui.home.HomeViewModel
+import com.example.naoandroidclient.ui.main.bottombar.BottomBar
+import com.example.naoandroidclient.ui.main.topbar.MainAppBar
 import com.example.naoandroidclient.ui.main.topbar.MainAppBarViewModel
 import com.example.naoandroidclient.ui.navigation.Navigation
 import com.example.naoandroidclient.ui.search.SearchViewModel
@@ -45,7 +47,7 @@ fun MainScreen (mainViewModel: MainViewModel,
         scaffoldState = scaffoldState,
         topBar = { MainAppBar( mainAppBarViewModel = mainAppBarViewModel, scaffoldState = scaffoldState, scope = scope, navController = navController)
         },
-        bottomBar = {BottomBar(mainViewModel = mainViewModel)},
+        bottomBar = { BottomBar(mainViewModel = mainViewModel) },
         drawerContent = { DrawerContent(viewModel = mainViewModel) }) {
 
 

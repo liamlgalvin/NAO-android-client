@@ -1,11 +1,14 @@
 package com.example.naoandroidclient.ui
 
 
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.NoAccounts
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
+import com.example.naoandroidclient.data.repository.InMemoryAppRepository
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
-import com.example.naoandroidclient.data.repository.InMemoryAppRepository
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.domain.RobotStatus
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
@@ -28,6 +31,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import okhttp3.OkHttpClient
 import javax.inject.Inject
+
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -103,8 +107,10 @@ class MainViewModel @Inject constructor(
         }
         println(message.robotStatus)
         this.robotStatus.value = robotStatusMapper.map(message.robotStatus)
-        this.currentApp.value = if (message.currentAppId != "") appRepository.getAppById(message.currentAppId.toLong()) else App(0,"","","")
+        this.currentApp.value = if (message.currentAppId != "") appRepository.getAppById(message.currentAppId.toLong()) else defaultApp()
     }
+
+    private fun defaultApp() = App(0,"","","")
 
     private fun onReceiveResponseConnection(response: WebSocket.Event) {
         when (response) {

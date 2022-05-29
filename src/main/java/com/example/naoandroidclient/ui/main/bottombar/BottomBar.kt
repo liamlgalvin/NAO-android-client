@@ -1,4 +1,4 @@
-package com.example.naoandroidclient.ui.main
+package com.example.naoandroidclient.ui.main.bottombar
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
@@ -12,10 +12,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.naoandroidclient.R
 import com.example.naoandroidclient.domain.RobotStatus
 import com.example.naoandroidclient.ui.MainViewModel
+import com.example.naoandroidclient.ui.image.SmallLogoImage
 
 @Composable
 fun BottomBar(mainViewModel: MainViewModel) {
@@ -45,13 +48,11 @@ fun BottomBar(mainViewModel: MainViewModel) {
                     modifier = Modifier.align(Alignment.CenterStart),
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Clear,
-                            contentDescription = "",
-                            Modifier.height(40.dp)
-                                .width(40.dp)
-                                .padding(horizontal = 5.dp)
-                        )
 
+                            mainViewModel.currentApp.value?.getImageBitmap()?.let {
+                                    bitmap ->
+                                SmallLogoImage(bitmap)
+                            }
 
                         mainViewModel.currentApp.value?.let { Text(text = it.name) }
                     }
@@ -63,17 +64,20 @@ fun BottomBar(mainViewModel: MainViewModel) {
                     Button(
                         onClick =
                         {
-                            mainViewModel.sendMessage("cancel", "")
+                            mainViewModel.currentApp.value?.id?.toString()
+                                ?.let { mainViewModel.sendMessage("cancel", it) }
 
                         }
                     ) {
-                        androidx.compose.material.Text(text = "cancel app")
+                        androidx.compose.material.Text(text = stringResource(id = R.string.cancel))
                     }
                 }
             }
         }
     }
 }
+
+
 
 @Preview
 @Composable
@@ -90,9 +94,10 @@ fun ComposablePreview() {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.Clear,
                         contentDescription = "",
-                    Modifier.height(40.dp)
-                        .width(40.dp)
-                        .padding(horizontal = 5.dp)
+                        Modifier
+                            .height(40.dp)
+                            .width(40.dp)
+                            .padding(horizontal = 5.dp)
                     )
 
 

@@ -1,4 +1,4 @@
-package com.example.naoandroidclient.ui.main
+package com.example.naoandroidclient.ui.main.topbar
 
 import android.annotation.SuppressLint
 import androidx.compose.material.ScaffoldState
@@ -18,8 +18,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.naoandroidclient.R
-import com.example.naoandroidclient.ui.MainViewModel
-import com.example.naoandroidclient.ui.main.topbar.MainAppBarViewModel
 import com.example.naoandroidclient.ui.navigation.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
