@@ -31,7 +31,7 @@ fun Navigation(
             ConnectScreen(navController = navController, mainViewModel = mainViewModel, connectViewModel = connectViewModel)
         }
         composable(route = Screen.HomeScreen.route){
-            HomeScreen(navController = navController, mainViewModel = mainViewModel, homeViewModel = homeViewModel)
+            HomeScreen(navController = navController, homeViewModel = homeViewModel)
         }
         composable(route = "${Screen.DetailScreen.route}/{appId}",
             arguments = listOf(navArgument("appId") { type = NavType.LongType })

@@ -29,7 +29,6 @@ import com.example.naoandroidclient.ui.navigation.Screen
 @Composable
 fun ConnectScreen(navController: NavController, mainViewModel: MainViewModel, connectViewModel: ConnectViewModel) {
 
-    //val connectViewModel = ConnectViewModel()
     val focusManager = LocalFocusManager.current
 
     val connectionStatus by mainViewModel.connectionStatus.observeAsState()

@@ -18,4 +18,11 @@ class App(val id: Long,
         val bitmap = BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.size)
         return bitmap.asImageBitmap()
     }
+
+    fun getShortDescription(): String {
+        if (this.description.length > 99)
+           return "${this.description.take(100)}..."
+
+        return this.description
+    }
 }
