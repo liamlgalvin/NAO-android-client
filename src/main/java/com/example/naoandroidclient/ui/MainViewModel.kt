@@ -99,8 +99,7 @@ class MainViewModel @Inject constructor(
         // todo
         when (message.type) {
             "error" -> {
-                println("ERROR!!! ${message.message}")
-                this.message.value = message.message
+                this.errorMessage.value = message.message
             }
             else -> this.message.value = message.message
         }

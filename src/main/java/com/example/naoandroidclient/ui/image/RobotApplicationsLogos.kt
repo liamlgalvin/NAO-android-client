@@ -12,16 +12,16 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SmallLogoImage(bitmap: ImageBitmap) {
+fun SmallLogoImage(bitmap: ImageBitmap, modifier: Modifier = Modifier) {
     if (bitmap == null){
         return
     }
     Image(bitmap = bitmap,
         contentDescription = "Logo",
-        modifier =  Modifier
+        modifier =  modifier
             .height(70.dp)
             .width(70.dp)
-            .padding(horizontal = 5.dp))
+    )
 }
 
 @Composable

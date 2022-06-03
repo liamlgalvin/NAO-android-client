@@ -2,8 +2,6 @@ package com.example.naoandroidclient.ui.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -11,10 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.naoandroidclient.R
 import com.example.naoandroidclient.domain.App
 import com.example.naoandroidclient.ui.image.LargeLogoImage
 import com.example.naoandroidclient.ui.image.MediumLogoImage
@@ -32,7 +32,9 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())) {
 
-        TopApps(apps, navController)
+        if (apps.isNotEmpty()) {
+            TopApps(apps, navController)
+        }
 
         if (groupedApps.isNotEmpty()){
             DiscoverApps(groupedApps.keys.sorted(), groupedApps, homeViewModel, navController)
@@ -64,7 +66,7 @@ private fun ChoiceChipContent(
             .clip(RoundedCornerShape(100.dp))
             .border(
                 2.dp, color = when {
-                    selected -> MaterialTheme.colors.primary
+                    selected -> MaterialTheme.colors.primary.copy(alpha = 0.90f)
                     else -> Color.Transparent
                 }, RoundedCornerShape(100.dp)
             )
@@ -88,7 +90,7 @@ fun DiscoverApps(
     Column (horizontalAlignment = Alignment.Start,
         modifier = Modifier.padding(10.dp)){
 
-        SectionHeaderText( "Discover")
+        SectionHeaderText( text =  stringResource(id = R.string.discover))
 
         ScrollableTabRow(
             selectedTabIndex = homeViewModel.tabIndex.value,
@@ -185,28 +187,26 @@ fun TopApps(apps: List<App>, navController: NavController) {
             .padding(horizontal = 10.dp)) {
 
 
-        SectionHeaderText( "Top Apps")
-
-        LazyRow(
-            contentPadding = PaddingValues(8.dp),
-            horizontalArrangement = Arrangement.Center
+        SectionHeaderText( text = stringResource(id = R.string.top_apps))
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.horizontalScroll(rememberScrollState())
         ) {
-            items(apps) {
-                apps.forEach { app ->
-                    app.getImageBitmap()?.let {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .padding(horizontal = 10.dp)
-                                .clickable {
-                                    navController.navigate(Screen.DetailScreen.route + "/${app.id}")
-                                }) {
-                            LargeLogoImage(it)
-                            Text(text = app.name, color = Color.Gray)
-                        }
+            apps.forEach {app ->
+                app.getImageBitmap()?.let {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .clickable {
+                                navController.navigate(Screen.DetailScreen.route + "/${app.id}")
+                            }) {
+                        LargeLogoImage(it)
+                        Text(text = app.name, color = Color.Gray)
                     }
                 }
             }
-
         }
-    }}
+
+    }
+}
 

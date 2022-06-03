@@ -40,6 +40,8 @@ fun MainScreen (mainViewModel: MainViewModel,
     val navController = rememberNavController()
 
     val connectionStatus by mainViewModel.connectionStatus.observeAsState()
+    val errorMessage by mainViewModel.errorMessage.observeAsState()
+    val message by mainViewModel.message.observeAsState()
 
     val progressBar by mainViewModel.showProgressBar.observeAsState()
 
@@ -52,7 +54,15 @@ fun MainScreen (mainViewModel: MainViewModel,
             },
             bottomBar = { BottomBar(mainViewModel = mainViewModel) },
             drawerContent = { DrawerContent(viewModel = mainViewModel) },
-            backgroundColor = Color.Transparent
+            backgroundColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(it) {
+                data -> Snackbar (
+                snackbarData = data,
+                backgroundColor = Color.White,
+                contentColor = Color.DarkGray)
+
+                }
+            }
         )
         {
 
@@ -69,6 +79,13 @@ fun MainScreen (mainViewModel: MainViewModel,
                 true -> LinearProgressIndicator(Modifier.fillMaxWidth())
             }
 
+            when(errorMessage){
+                else -> displayErrorSnackbar(scope, scaffoldState, mainViewModel)
+            }
+
+            when(message){
+                else -> displayMessageSnackbar(scope, scaffoldState, mainViewModel)
+            }
 
             Navigation( navController = navController,
                 mainViewModel = mainViewModel,
@@ -81,6 +98,30 @@ fun MainScreen (mainViewModel: MainViewModel,
 
     }
     }
+
+fun displayMessageSnackbar(scope: CoroutineScope, scaffoldState: ScaffoldState, mainViewModel: MainViewModel) {
+    if (mainViewModel.message.value == null || mainViewModel.message.value.toString().isEmpty() ) return
+
+    scope.launch {
+        scaffoldState.snackbarHostState.showSnackbar(
+            message = mainViewModel.message.value!!,
+            duration = SnackbarDuration.Short
+        )
+
+    }
+}
+
+fun displayErrorSnackbar(scope: CoroutineScope, scaffoldState: ScaffoldState, mainViewModel: MainViewModel) {
+    if (mainViewModel.errorMessage.value == null || mainViewModel.errorMessage.value.toString().isEmpty() ) return
+
+        scope.launch {
+            scaffoldState.snackbarHostState.showSnackbar(
+                    message = mainViewModel.errorMessage.value!!,
+                    duration = SnackbarDuration.Short
+                )
+
+        }
+}
 
 
 fun displayConnectionSnackbar(

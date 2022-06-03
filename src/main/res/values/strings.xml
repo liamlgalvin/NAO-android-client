@@ -7,11 +7,17 @@
 
     <string name="search">search</string>
 
-    <string name="about">about</string>
-    <string name="disconnect">disconnect</string>
+    <string name="about">About</string>
+    <string name="disconnect">Disconnect</string>
 
 
     <string name="cancel">cancel</string>
+
+    <string name="top_apps">Top Apps</string>
+    <string name="discover">Discover</string>
+
+    <string name="start_app">Start App</string>
+
 
 
 

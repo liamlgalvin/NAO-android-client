@@ -4,18 +4,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.naoandroidclient.R
 import com.example.naoandroidclient.domain.App
 import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.component.ButtonText
+import com.example.naoandroidclient.ui.home.SectionHeaderText
 import com.example.naoandroidclient.ui.image.HeaderLogoImage
 
 @Composable
@@ -38,33 +42,55 @@ fun AppDetail(app: App?, detailViewModel: DetailViewModel, mainViewModel: MainVi
         .padding(10.dp)) {
 
         if (app != null) {
-            AppDescriptionHeader(app = app) { mainViewModel.sendMessage("start_app", "${app.id}") }
+            AppDescriptionHeader(app = app)
 
-            AppDescriptionText(app = app)
+            AppDetailBody(mainViewModel, app)
         }
 
-        Row(modifier = Modifier
+
+    }
+}
+
+@Composable
+private fun AppDetailBody(
+    mainViewModel: MainViewModel,
+    app: App?
+) {
+    if (app != null) {
+        StartAppButton(mainViewModel, app)
+        AppDescriptionText(app = app)
+    }
+}
+
+@Composable
+private fun StartAppButton(
+    mainViewModel: MainViewModel,
+    app: App?
+) {
+    Row(
+        modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp),
-            horizontalArrangement = Arrangement.Center) {
-            Button(
-                onClick =
-                {
-                    mainViewModel.sendMessage(
-                        "start_app", "${
-                            app?.let { app -> app.id
-                            }
-                        }"
-                    )
-                }
-            ) {
-                ButtonText("Start App")        }
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Button(
+            onClick =
+            {
+                mainViewModel.sendMessage(
+                    "start_app", "${
+                        app?.let { app ->
+                            app.id
+                        }
+                    }"
+                )
+            }
+        ) {
+            ButtonText(stringResource(id = R.string.start_app))
+            Icon(
+                Icons.Filled.PlayArrow,
+                contentDescription = "play",
+            )
         }
-
-
-
-
-
     }
 }
 
@@ -75,62 +101,30 @@ fun AppDescriptionText(app: App) {
         .padding(top = 20.dp),
         horizontalArrangement = Arrangement.Start) {
         if (app != null) {
-            Text(text = app.name, style = MaterialTheme.typography.h3, color = MaterialTheme.colors.primary)
-
+            SectionHeaderText(app.name)
         }
     }
     Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 20.dp),
-        horizontalArrangement = Arrangement.Start,) {
+        .fillMaxWidth(),
+        //.padding(top = 20.dp),
+        horizontalArrangement = Arrangement.Start
+    ) {
         if (app != null) {
-            Text(text = app.description, style = MaterialTheme.typography.subtitle1, color = MaterialTheme.colors.primaryVariant)
+            Text(
+                text = app.description,
+                style = MaterialTheme.typography.subtitle1,
+                color = Color.LightGray,
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
         }
     }}
 
 @Composable
 private fun AppDescriptionHeader(
-    app: App,
-    onClick: () -> Unit
-) {
-    Box {
-        app?.getImageBitmap()?.let { HeaderLogoImage(bitmap = it) }
-        PlayButton(
-            modifier = Modifier
-                .padding(end = 20.dp)
-                .size(100.dp)
-                .align(Alignment.BottomEnd)
-                .offset(y = 40.dp), // overlap bottom of image
-            onClick = onClick
-        )
+    app: App) {
+    Box (Modifier.fillMaxWidth()){
+        app?.getImageBitmap()?.let { HeaderLogoImage(bitmap = it, modifier= Modifier.align(Alignment.Center)) }
     }
 }
 
-@Composable
-fun PlayButton(
-    modifier: Modifier = Modifier,
-    outlineSize: Dp = 3.dp,
-    outlineColor: Color = MaterialTheme.colors.surface,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = modifier
-    ) {
-        LargeFloatingActionButton(
-            modifier = Modifier
-                .padding(outlineSize)
-                .fillMaxSize(),
-            onClick = onClick
-        ){
-            Row(verticalAlignment = Alignment.CenterVertically){
-                // Text(text = "start app", modifier = Modifier.padding(start= 15.dp))
-                Icon(
-                    Icons.Filled.PlayArrow,
-                    contentDescription = "Localized description",
-                    modifier = Modifier.size(FloatingActionButtonDefaults.LargeIconSize),
-                )
-            }
-        }
-    }
-}
 

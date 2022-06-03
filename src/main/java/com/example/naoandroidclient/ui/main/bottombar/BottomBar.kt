@@ -1,13 +1,12 @@
 package com.example.naoandroidclient.ui.main.bottombar
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.naoandroidclient.R
 import com.example.naoandroidclient.domain.RobotStatus
 import com.example.naoandroidclient.ui.MainViewModel
+import com.example.naoandroidclient.ui.component.ButtonText
 import com.example.naoandroidclient.ui.image.SmallLogoImage
 
 @Composable
@@ -51,10 +51,11 @@ fun BottomBar(mainViewModel: MainViewModel) {
 
                             mainViewModel.currentApp.value?.getImageBitmap()?.let {
                                     bitmap ->
-                                SmallLogoImage(bitmap)
+                                SmallLogoImage(bitmap,Modifier
+                                    .padding(horizontal = 5.dp))
                             }
 
-                        mainViewModel.currentApp.value?.let { Text(text = it.name) }
+                        mainViewModel.currentApp.value?.let { Text(text = it.name, style = MaterialTheme.typography.bodyLarge) }
                     }
                 }
                 Column(
@@ -69,7 +70,7 @@ fun BottomBar(mainViewModel: MainViewModel) {
 
                         }
                     ) {
-                        androidx.compose.material.Text(text = stringResource(id = R.string.cancel))
+                        ButtonText(text = stringResource(id = R.string.cancel))
                     }
                 }
             }
