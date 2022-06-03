@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
@@ -43,36 +44,46 @@ fun MainScreen (mainViewModel: MainViewModel,
     val progressBar by mainViewModel.showProgressBar.observeAsState()
 
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = { MainAppBar( mainAppBarViewModel = mainAppBarViewModel, scaffoldState = scaffoldState, scope = scope, navController = navController)
-        },
-        bottomBar = { BottomBar(mainViewModel = mainViewModel) },
-        drawerContent = { DrawerContent(viewModel = mainViewModel) }) {
 
-
-        when (connectionStatus) {
-            ConnectionStatus.CONNECTED -> displaySnackbar(scope, scaffoldState, mainViewModel)
-            ConnectionStatus.NOT_CONNECTED -> displaySnackbar(scope, scaffoldState, mainViewModel)
-            else -> displaySnackbar(scope, scaffoldState, mainViewModel)
-        }
-
-        when (progressBar) {
-            true -> LinearProgressIndicator(Modifier.fillMaxWidth())
-        }
-
-        Navigation( navController = navController,
-            mainViewModel = mainViewModel,
-            searchViewModel = searchViewModel,
-            connectViewModel = connectViewModel,
-            homeViewModel = homeViewModel,
-            detailViewModel = detailViewModel
+        Scaffold(
+            scaffoldState = scaffoldState,
+            topBar = {
+                MainAppBar( mainAppBarViewModel = mainAppBarViewModel, scaffoldState = scaffoldState, scope = scope, navController = navController)
+            },
+            bottomBar = { BottomBar(mainViewModel = mainViewModel) },
+            drawerContent = { DrawerContent(viewModel = mainViewModel) },
+            backgroundColor = Color.Transparent
         )
+        {
+
+
+            when (connectionStatus) {
+                ConnectionStatus.CONNECTED -> displayConnectionSnackbar(scope, scaffoldState, mainViewModel)
+                ConnectionStatus.NOT_CONNECTED -> displayConnectionSnackbar(scope, scaffoldState, mainViewModel)
+                else -> displayConnectionSnackbar(scope, scaffoldState, mainViewModel)
+            }
+
+
+
+            when (progressBar) {
+                true -> LinearProgressIndicator(Modifier.fillMaxWidth())
+            }
+
+
+            Navigation( navController = navController,
+                mainViewModel = mainViewModel,
+                searchViewModel = searchViewModel,
+                connectViewModel = connectViewModel,
+                homeViewModel = homeViewModel,
+                detailViewModel = detailViewModel
+            )
+
 
     }
-}
+    }
 
-fun displaySnackbar(
+
+fun displayConnectionSnackbar(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
     mainViewModel: MainViewModel

@@ -2,10 +2,11 @@ package com.example.naoandroidclient.ui
 
 
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.NoAccounts
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.naoandroidclient.data.repository.InMemoryAppRepository
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
@@ -16,9 +17,7 @@ import com.example.naoandroidclient.sockets.RobotMessageService
 import com.example.naoandroidclient.sockets.dto.Message
 import com.example.naoandroidclient.sockets.dto.Subscribe
 import com.example.naoandroidclient.sockets.mapper.RobotStatusMapper
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapter
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Scarlet
 import com.tinder.scarlet.WebSocket
@@ -180,9 +179,4 @@ class MainViewModel @Inject constructor(
 
     // sending message stuff
 
-    @OptIn(ExperimentalStdlibApi::class)
-    fun jsonifyApp(appToConvert: App): String {
-        val jsonAdapter: JsonAdapter<com.example.naoandroidclient.sockets.dto.App> = moshi.adapter()
-        return jsonAdapter.toJson(appRepository.appMapper.map(appToConvert))
-    }
 }

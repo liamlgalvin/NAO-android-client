@@ -13,10 +13,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -38,6 +40,7 @@ import com.example.naoandroidclient.ui.navigation.Screen
 fun SearchScreen(navController: NavController,
                  searchViewModel: SearchViewModel,
                  focusManager: FocusManager = LocalFocusManager.current) {
+
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -49,34 +52,7 @@ fun SearchScreen(navController: NavController,
             }
     ) {
 
-        Row() {
-            OutlinedTextField(
-                value = searchViewModel.searchText.value,
-                onValueChange = {
-                        searchText -> searchViewModel.searchText.value = searchText
-                                },
-                label = { Text(stringResource(id = R.string.search)) },
-                keyboardActions = KeyboardActions(onSearch = {
-                    focusManager.clearFocus()
-                }),
-                keyboardOptions = KeyboardOptions (
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Search
-                        ),
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.Clear,
-                        contentDescription = stringResource(id = R.string.clear_input),
-                        modifier = Modifier
-                            .clickable {
-                                searchViewModel.searchText.value = ""
-                            }
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        SearchBar(searchViewModel, focusManager)
 
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
@@ -84,6 +60,47 @@ fun SearchScreen(navController: NavController,
             searchViewModel, navController
         )
     }
+}
+
+@Composable
+fun SearchBar(searchViewModel: SearchViewModel, focusManager: FocusManager) {
+    OutlinedTextField(
+        textStyle = TextStyle(Color.White),
+        value = searchViewModel.searchText.value,
+        onValueChange = {
+                searchText -> searchViewModel.searchText.value = searchText
+        },
+        label = {
+            Row() {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "search",
+                    tint = Color.White
+                )
+                Text(stringResource(id = R.string.search), color = Color.White)
+            }
+        },
+        keyboardActions = KeyboardActions(onSearch = {
+            focusManager.clearFocus()
+        }),
+        keyboardOptions = KeyboardOptions (
+            autoCorrect = false,
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        trailingIcon = {
+            Icon(
+                Icons.Default.Clear,
+                contentDescription = stringResource(id = R.string.clear_input),
+                modifier = Modifier
+                    .clickable {
+                        searchViewModel.searchText.value = ""
+                    },
+                tint = Color.White
+            )
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Composable

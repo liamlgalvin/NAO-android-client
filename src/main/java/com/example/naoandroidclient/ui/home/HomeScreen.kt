@@ -6,11 +6,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.naoandroidclient.domain.App
@@ -33,7 +35,7 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
         TopApps(apps, navController)
 
         if (groupedApps.isNotEmpty()){
-            AllApps(groupedApps.keys.sorted(), groupedApps, homeViewModel, navController)
+            DiscoverApps(groupedApps.keys.sorted(), groupedApps, homeViewModel, navController)
         }
 
     }
@@ -51,11 +53,11 @@ private fun ChoiceChipContent(
     Surface(
         color = when {
             selected -> MaterialTheme.colors.primary.copy(alpha = 0.08f)
-            else -> MaterialTheme.colors.onSurface.copy(alpha = 0.12f)
+            else -> MaterialTheme.colors.onPrimary.copy(alpha = 0.12f)
         },
         contentColor = when {
-            selected -> MaterialTheme.colors.primary
-            else -> MaterialTheme.colors.onSurface
+            selected -> MaterialTheme.colors.onPrimary
+            else -> MaterialTheme.colors.onPrimary
         },
         shape = MaterialTheme.shapes.small,
         modifier = modifier
@@ -76,20 +78,17 @@ private fun ChoiceChipContent(
 }
 
 @Composable
-fun AllApps(
+fun DiscoverApps(
     appGroups: List<Char>,
     groupedApps: Map<Char, List<App>>,
     homeViewModel: HomeViewModel,
     navController: NavController
 ) {
 
-    Column (horizontalAlignment = Alignment.CenterHorizontally){
+    Column (horizontalAlignment = Alignment.Start,
+        modifier = Modifier.padding(10.dp)){
 
-        Text(
-            text = "Discover",
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+        SectionHeaderText( "Discover")
 
         ScrollableTabRow(
             selectedTabIndex = homeViewModel.tabIndex.value,
@@ -121,27 +120,52 @@ fun AllApps(
         }
     }
 
+@Composable
+fun SectionHeaderText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.h4,
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+        color = Color.White,
+        fontWeight = FontWeight.Bold
+    )
+}
+
 
 @Composable
 fun AppCard(app: App, navController: NavController) {
-    Row(modifier = Modifier.fillMaxWidth().clickable {
-        navController.navigate(Screen.DetailScreen.route + "/${app.id}")
-    }
+
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 5.dp, horizontal = 20.dp)
+        .background(
+            color = MaterialTheme.colors.onPrimary.copy(alpha = 0.12f),
+            shape = RoundedCornerShape(20.dp)
+        )
+        .clip(RoundedCornerShape(20.dp))
+        .clickable {
+            navController.navigate(Screen.DetailScreen.route + "/${app.id}")
+        }
     ) {
-        Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+        Column(
+            modifier = Modifier.padding(end = 10.dp)
+        ) {
             app.getImageBitmap()?.let { MediumLogoImage(it) }
         }
         Column() {
             Text(
                 text = app.name,
                 style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(horizontal = 5.dp, vertical = 5.dp)
+                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
+                color = Color.White,
+                fontWeight = Bold
             )
 
             Text(
                 text = app.getShortDescription(),
                 style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(horizontal = 5.dp, vertical = 5.dp)
+                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
+                color = Color.Gray
             )
 
 
@@ -155,13 +179,13 @@ fun AppCard(app: App, navController: NavController) {
 @Composable
 fun TopApps(apps: List<App>, navController: NavController) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)) {
 
 
-        Text(text = "top apps", style = MaterialTheme.typography.h3,  modifier = Modifier.padding(20.dp))
+        SectionHeaderText( "Top Apps")
 
         LazyRow(
             contentPadding = PaddingValues(8.dp),
@@ -177,7 +201,7 @@ fun TopApps(apps: List<App>, navController: NavController) {
                                     navController.navigate(Screen.DetailScreen.route + "/${app.id}")
                                 }) {
                             LargeLogoImage(it)
-                            Text(text = app.name)
+                            Text(text = app.name, color = Color.Gray)
                         }
                     }
                 }

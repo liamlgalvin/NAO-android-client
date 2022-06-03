@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
+import com.example.naoandroidclient.ui.component.AppBackground
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
 import com.example.naoandroidclient.ui.detail.DetailViewModel
 import com.example.naoandroidclient.ui.home.HomeViewModel
@@ -32,24 +33,20 @@ class MainActivity : ComponentActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        if (savedInstanceState != null) {
-//            // get ip if it has been set on closing
-//            savedInstanceState.getString("ip")?.let { mainViewModel.setIp(it) }
-//            savedInstanceState.getString("connectedState")?.let { mainViewModel.setConnectedState(it) }
-//        }
-
         val activityNotificationObserver = createActivityNotificationObserver()
         mainViewModel.activityNotification.observe(this, activityNotificationObserver)
 
         setContent {
             NaoApp {
-                MainScreen(mainViewModel = mainViewModel,
-                    searchViewModel = searchViewModel,
-                    connectViewModel = connectViewModel,
-                    mainAppBarViewModel = mainAppBarViewModel,
-                    homeViewModel = homeViewModel,
-                    detailViewModel = detailViewModel
-                )
+                AppBackground() {
+                    MainScreen(mainViewModel = mainViewModel,
+                        searchViewModel = searchViewModel,
+                        connectViewModel = connectViewModel,
+                        mainAppBarViewModel = mainAppBarViewModel,
+                        homeViewModel = homeViewModel,
+                        detailViewModel = detailViewModel
+                    )
+                }
             }
         }
 

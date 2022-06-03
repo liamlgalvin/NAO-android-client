@@ -11,4 +11,5 @@ class DetailViewModel @Inject constructor(
 ): ViewModel() {
 
     fun getAppById(appId: Long) = appRepository.getAppById(appId)
+
 }
