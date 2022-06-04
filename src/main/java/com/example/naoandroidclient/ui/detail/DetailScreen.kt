@@ -8,8 +8,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,8 +24,6 @@ import com.example.naoandroidclient.ui.image.HeaderLogoImage
 fun DetailScreen(detailViewModel: DetailViewModel, mainViewModel: MainViewModel, appId: Long) {
 
     val app = detailViewModel.getAppById(appId)
-
-    val message by mainViewModel.message.observeAsState() // todo: his will be removed
 
     AppDetail(app, detailViewModel, mainViewModel) // todo: dont pass main view model
 

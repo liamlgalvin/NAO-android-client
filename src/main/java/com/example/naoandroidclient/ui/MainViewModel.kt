@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.naoandroidclient.R
 import com.example.naoandroidclient.data.repository.InMemoryAppRepository
 import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.domain.App
@@ -15,7 +16,8 @@ import com.example.naoandroidclient.domain.RobotStatus
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
 import com.example.naoandroidclient.sockets.RobotMessageService
 import com.example.naoandroidclient.sockets.dto.Message
-import com.example.naoandroidclient.sockets.dto.Subscribe
+import com.example.naoandroidclient.sockets.mapper.ErrorMessageMapper
+import com.example.naoandroidclient.sockets.mapper.MessageMapper
 import com.example.naoandroidclient.sockets.mapper.RobotStatusMapper
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Lifecycle
@@ -45,20 +47,20 @@ class MainViewModel @Inject constructor(
     lateinit var webSocketService: RobotMessageService
 
     var robotStatus =  state.getLiveData<RobotStatus>("robotStatus" , RobotStatus.NO_APP_RUNNING)
-    var message =  state.getLiveData<String>("message")
-    var errorMessage =  state.getLiveData<String>("errorMessage")
+    var message =  state.getLiveData<Int>("message")
+    var errorMessage =  state.getLiveData<Int>("errorMessage")
     var currentApp =  state.getLiveData<App>("currentApp")
 
-    var connectedState = state.getLiveData<String>("connectedState")
-    var previousConnectedState = mutableStateOf("")
+    var connectedState = state.getLiveData<Int>("connectedState")
+    var previousConnectedState = mutableStateOf(0)
 
     val activityNotification: MutableLiveData<ActivityNotification> by lazy { MutableLiveData<ActivityNotification>() }
 
     var showProgressBar = MutableLiveData(false)
     val connectionStatus = MutableLiveData(ConnectionStatus.NOT_CONNECTED)
 
-    fun getConnectedState() : String? {
-        previousConnectedState.value = connectedState.value.toString()
+    fun getConnectedState() : Int? {
+        previousConnectedState.value = connectedState.value!!
         return connectedState.value
     }
 
@@ -96,12 +98,14 @@ class MainViewModel @Inject constructor(
     }
 
     private fun handleMessage(message: Message) {
-        // todo
+        val messageMapper = MessageMapper()
+        val errorMessageMapper = ErrorMessageMapper()
+
         when (message.type) {
             "error" -> {
-                this.errorMessage.value = message.message
+                this.errorMessage.value = errorMessageMapper.map(message.message)
             }
-            else -> this.message.value = message.message
+            else -> this.message.value = messageMapper.map(message.message)
         }
         this.robotStatus.value = robotStatusMapper.map(message.robotStatus)
         this.currentApp.value = if (message.currentAppId != "") appRepository.getAppById(message.currentAppId.toLong()) else defaultApp()
@@ -121,19 +125,18 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun completeWebSocketConnection() {
-        this.connectedState.value = "connected to robot" // todo fix this
+    private fun completeWebSocketConnection() {
+        this.connectedState.value = R.string.connected_to_robot
         toggleConnectionStatus()
         toggleProgressBar()
-        webSocketService.sendSubscribe(Subscribe()) //fixme: necessary??
         sendMessage("get_apps")
     }
 
     fun disconnectWebSocket() {
         if (connectionStatus.value == ConnectionStatus.CONNECTED) {
-            this.connectedState.value ="connection lost" // todo fix this
+            this.connectedState.value = R.string.connection_lost
         } else {
-            this.connectedState.value ="connection failed: check ip" // todo fix this
+            this.connectedState.value = R.string.check_ip
         }
         toggleConnectionStatus()
         toggleProgressBar()

@@ -1,6 +1,5 @@
 package com.example.naoandroidclient.ui.main
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -10,6 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
@@ -24,7 +24,6 @@ import com.example.naoandroidclient.ui.search.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen (mainViewModel: MainViewModel,
@@ -80,12 +79,20 @@ fun MainScreen (mainViewModel: MainViewModel,
             }
 
             when(errorMessage){
-                else -> displayErrorSnackbar(scope, scaffoldState, mainViewModel)
+                else -> errorMessage?.let { message -> stringResource(id = message) }?.let { errorMessage ->
+                    displaySnackbar(scope, scaffoldState,
+                        errorMessage
+                    )
+                }
             }
 
-            when(message){
-                else -> displayMessageSnackbar(scope, scaffoldState, mainViewModel)
-            }
+//            when(message){
+//                else -> message?.let { message -> stringResource(id = message) }?.let { successMessage ->
+//                    displayMessageSnackbar(scope, scaffoldState,
+//                        successMessage
+//                    )
+//                }
+//            }
 
             Navigation( navController = navController,
                 mainViewModel = mainViewModel,
@@ -99,46 +106,26 @@ fun MainScreen (mainViewModel: MainViewModel,
     }
     }
 
-fun displayMessageSnackbar(scope: CoroutineScope, scaffoldState: ScaffoldState, mainViewModel: MainViewModel) {
-    if (mainViewModel.message.value == null || mainViewModel.message.value.toString().isEmpty() ) return
-
+fun displaySnackbar(scope: CoroutineScope, scaffoldState: ScaffoldState, message: String) {
     scope.launch {
         scaffoldState.snackbarHostState.showSnackbar(
-            message = mainViewModel.message.value!!,
+            message = message,
             duration = SnackbarDuration.Short
         )
-
     }
 }
 
-fun displayErrorSnackbar(scope: CoroutineScope, scaffoldState: ScaffoldState, mainViewModel: MainViewModel) {
-    if (mainViewModel.errorMessage.value == null || mainViewModel.errorMessage.value.toString().isEmpty() ) return
-
-        scope.launch {
-            scaffoldState.snackbarHostState.showSnackbar(
-                    message = mainViewModel.errorMessage.value!!,
-                    duration = SnackbarDuration.Short
-                )
-
-        }
-}
-
-
+@Composable
 fun displayConnectionSnackbar(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
     mainViewModel: MainViewModel
 ) {
-    if (mainViewModel.connectedState.value.toString().isEmpty() || mainViewModel.connectedState.value == null) return
+    if (mainViewModel.connectedState.value == null) return
 
-    if (mainViewModel.previousConnectedState.value != mainViewModel.connectedState.value.toString()) {
-        scope.launch {
-            mainViewModel.getConnectedState()?.let {
-                scaffoldState.snackbarHostState.showSnackbar(
-                    message = it,
-                    duration = SnackbarDuration.Short
-                )
-            }
+    if (mainViewModel.connectedState.value != mainViewModel.previousConnectedState.value) {
+        mainViewModel.getConnectedState()?.let {message ->
+            displaySnackbar(scope, scaffoldState, stringResource(id = message))
         }
     }
 

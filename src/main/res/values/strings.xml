@@ -2,16 +2,16 @@
     <string name="app_name">Nao Android Client</string>
 
     <string name="nao_robot_ip_address">NAO Robot IP address</string>
-    <string name="clear_input">clear input</string>
+    <string name="clear_input">Clear input</string>
     <string name="connect">Connect</string>
 
-    <string name="search">search</string>
+    <string name="search">Search</string>
 
     <string name="about">About</string>
     <string name="disconnect">Disconnect</string>
 
 
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
 
     <string name="top_apps">Top Apps</string>
     <string name="discover">Discover</string>
@@ -19,7 +19,21 @@
     <string name="start_app">Start App</string>
 
 
+<!--    messages-->
+    <string name="app_started">App started successfully</string>
+    <string name="app_finished">App finished successfully</string>
+    <string name="app_cancelled">App cancelled successfully</string>
 
+    <string name="app_doesnt_exist">App doesn\'t exist</string>
+    <string name="unknown_error">Unknown error has occurred </string>
+    <string name="app_location_incorrect">App cannot be found on system</string>
+    <string name="app_already_runnng">An app is already running</string>
+    <string name="problem_running_app">There was a problem running the app</string>
+    <string name="no_app_running">There is no app running to cancel</string>
+    <string name="could_not_cancel_app">Unable to cancel the app</string>
 
+    <string name="connected_to_robot">Connected to robot</string>
+    <string name="connection_lost">Connection lost</string>
+    <string name="check_ip">Connection failed: check ip</string>
 
 </resources>
