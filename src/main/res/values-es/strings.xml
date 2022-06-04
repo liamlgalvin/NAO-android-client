@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="nao_robot_ip_address">Dirección IP del robot NAO</string>
+    <string name="clear_input">Borrar texto</string>
+    <string name="connect">Conectar</string>
+
+    <string name="search">Buscar</string>
+
+    <string name="about">Acerca de la app</string>
+    <string name="disconnect">Desconectar</string>
+
+    <string name="cancel">Cancelar</string>
+
+    <string name="top_apps">Apps Destacadas</string>
+    <string name="discover">Descubrir</string>
+
+    <string name="start_app">Iniciar</string>
+
+
+    <!--    messages-->
+    <string name="app_started">La app ha sido iniciada con éxito</string>
+    <string name="app_finished">La app ha sido terminada con éxito</string>
+    <string name="app_cancelled">La app ha sido cancelada con éxito</string>
+
+    <string name="app_doesnt_exist">La app no existe</string>
+    <string name="unknown_error">Un error inesperado ha ocurrido </string>
+    <string name="app_location_incorrect">No se encuentra la app en el sistema</string>
+    <string name="app_already_runnng">Ya hay una app en ejecución</string>
+    <string name="problem_running_app">Ha habido en error al ejecutar la app</string>
+    <string name="no_app_running">No hay nada para cancelar</string>
+    <string name="could_not_cancel_app">No se ha podido cancelar la app</string>
+
+    <string name="connected_to_robot">Conectado al robot</string>
+    <string name="connection_lost">conexión perdida</string>
+    <string name="check_ip">conexión fallada: comprobar la ip</string>
+
+</resources>
