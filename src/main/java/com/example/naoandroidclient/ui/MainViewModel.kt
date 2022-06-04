@@ -103,7 +103,6 @@ class MainViewModel @Inject constructor(
             }
             else -> this.message.value = message.message
         }
-        println(message.robotStatus)
         this.robotStatus.value = robotStatusMapper.map(message.robotStatus)
         this.currentApp.value = if (message.currentAppId != "") appRepository.getAppById(message.currentAppId.toLong()) else defaultApp()
     }
@@ -175,7 +174,5 @@ class MainViewModel @Inject constructor(
             else -> {ConnectionStatus.NOT_CONNECTED}
         }
     }
-
-    // sending message stuff
 
 }

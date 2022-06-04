@@ -212,7 +212,7 @@ private fun GroupTitle(
         modifier = modifier
             .clip(RoundedCornerShape(100.dp))
             .border(
-                2.dp, color = MaterialTheme.colors.primary.copy(alpha = 0.90f)
+                2.dp, color = MaterialTheme.colors.onBackground.copy(alpha = 0.60f)
                 , RoundedCornerShape(100.dp)
             )
     ) {

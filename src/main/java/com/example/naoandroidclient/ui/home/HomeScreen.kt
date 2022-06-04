@@ -66,7 +66,7 @@ private fun ChoiceChipContent(
             .clip(RoundedCornerShape(100.dp))
             .border(
                 2.dp, color = when {
-                    selected -> MaterialTheme.colors.primary.copy(alpha = 0.90f)
+                    selected -> MaterialTheme.colors.onBackground.copy(alpha = 0.60f)
                     else -> Color.Transparent
                 }, RoundedCornerShape(100.dp)
             )
