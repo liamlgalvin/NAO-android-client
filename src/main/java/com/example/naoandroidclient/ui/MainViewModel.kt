@@ -155,7 +155,7 @@ class MainViewModel @Inject constructor(
         webSocketService = scarlet.create()
     }
 
-    fun sendCreateNotification() {
+    fun sendCreateConnectionNotification() {
         activityNotification.value = ActivityNotification.CREATE_CONNECTION
     }
     fun sendObserveNotification() {

@@ -107,11 +107,10 @@ fun ConnectScreen(navController: NavController, mainViewModel: MainViewModel, co
             onClick =
             {
                 focusManager.clearFocus()
-                connectViewModel.ip.value = "192.168.1.125" //todo remove
                 if (connectViewModel.isValidIp(connectViewModel.ip.value)) {
                     mainViewModel.toggleProgressBar()
                     mainViewModel.createRobotMessageService(connectViewModel.ip.value)
-                    mainViewModel.sendCreateNotification()
+                    mainViewModel.sendCreateConnectionNotification()
                     mainViewModel.sendObserveNotification()
                 }
             }
