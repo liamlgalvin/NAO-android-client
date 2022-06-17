@@ -73,13 +73,13 @@ private fun DrawerMenu(
 
 @Composable
 fun DisconnectedMenu() {
-    About()
+    //About()
 }
 
 @Composable
 fun ConnectedMenu(viewModel: MainViewModel) {
     Disconnect(viewModel)
-    About()
+    //About()
 }
 
 @Composable

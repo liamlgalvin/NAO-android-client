@@ -24,17 +24,17 @@ class InMemoryAppRepository  @Inject constructor(
                 foundApps.add(app)
             }
         }
-        return foundApps.groupBy { app -> app.name[0] }
+        return foundApps.groupBy { app -> app.name.lowercase()[0] }
     }
 
     private fun allWordsInName(appName: String, searchTextWords: Set<String>): Boolean {
         for (word in searchTextWords){
-            if (!appName.contains(word)) return false
+            if (!appName.lowercase().contains(word.lowercase())) return false
         }
         return true
     }
 
-    override fun getAppsAlphabetisedGrouped() = apps.toList().groupBy { app -> app.name[0] }
+    override fun getAppsAlphabetisedGrouped() = apps.toList().groupBy { app -> app.name.lowercase()[0] }
 
     override fun getApps()  = apps.toList()
 

@@ -40,7 +40,6 @@ fun MainScreen (mainViewModel: MainViewModel,
 
     val connectionStatus by mainViewModel.connectionStatus.observeAsState()
     val errorMessage by mainViewModel.errorMessage.observeAsState()
-    val message by mainViewModel.message.observeAsState()
 
     val progressBar by mainViewModel.showProgressBar.observeAsState()
 
@@ -85,14 +84,6 @@ fun MainScreen (mainViewModel: MainViewModel,
                     )
                 }
             }
-
-//            when(message){
-//                else -> message?.let { message -> stringResource(id = message) }?.let { successMessage ->
-//                    displayMessageSnackbar(scope, scaffoldState,
-//                        successMessage
-//                    )
-//                }
-//            }
 
             Navigation( navController = navController,
                 mainViewModel = mainViewModel,
