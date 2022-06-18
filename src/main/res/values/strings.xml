@@ -37,5 +37,11 @@
     <string name="connection_lost">Connection lost</string>
     <string name="check_ip">Connection failed: check ip</string>
 
+    <string name="no_apps_to_display">There are no apps to display :(</string>
+
+    <string name="add_app_endpoint">"Apps can be added via the endpoint on the robot at: http://%1$s:8000" </string>
+
+
+
 
 </resources>

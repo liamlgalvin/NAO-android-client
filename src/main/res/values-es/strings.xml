@@ -35,4 +35,8 @@
     <string name="connection_lost">conexión perdida</string>
     <string name="check_ip">conexión fallada: comprobar la ip</string>
 
+    <string name="no_apps_to_display">No hay apps para mostrar :(</string>
+    <string name="add_app_endpoint">"Se puede añadir apps a través del endpoint en el robot: http://%1$s:8000" </string>
+
+
 </resources>

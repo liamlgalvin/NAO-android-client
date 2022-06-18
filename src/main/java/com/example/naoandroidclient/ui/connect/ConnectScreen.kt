@@ -75,30 +75,34 @@ fun ConnectScreen(navController: NavController, mainViewModel: MainViewModel, co
             .fillMaxHeight()
             .padding(horizontal = 50.dp)) {
 
-        OutlinedTextField(
-            textStyle = TextStyle(Color.White),
-            value = connectViewModel.ip.value,
-            onValueChange = { ip -> connectViewModel.setIp(ip)  },
-            label = { Text(stringResource(id = R.string.nao_robot_ip_address), color = Color.White) },
-            keyboardActions = KeyboardActions(onGo = { focusManager.clearFocus() }),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Go
-            ),
-            trailingIcon = {
-                Icon(
-                    Icons.Default.Clear,
-                    contentDescription = stringResource(id = R.string.clear_input),
-                    modifier = Modifier
-                        .clickable {
-                            connectViewModel.ip.value = ""
-                        },
-                    tint = Color.White
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+        val ip by connectViewModel.ip.observeAsState()
+
+        ip?.let { value ->
+            OutlinedTextField(
+                textStyle = TextStyle(Color.White),
+                value = value,
+                onValueChange = { ip -> connectViewModel.ip.value = ip },
+                label = { Text(stringResource(id = R.string.nao_robot_ip_address), color = Color.White) },
+                keyboardActions = KeyboardActions(onGo = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Go
+                ),
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear_input),
+                        modifier = Modifier
+                            .clickable {
+                                connectViewModel.ip.value = ""
+                            },
+                        tint = Color.White
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+        }
 
         Button(
             modifier = Modifier
@@ -107,9 +111,9 @@ fun ConnectScreen(navController: NavController, mainViewModel: MainViewModel, co
             onClick =
             {
                 focusManager.clearFocus()
-                if (connectViewModel.isValidIp(connectViewModel.ip.value)) {
+                if (connectViewModel.ip.value?.let { connectViewModel.isValidIp(it) } == true) {
                     mainViewModel.toggleProgressBar()
-                    mainViewModel.createRobotMessageService(connectViewModel.ip.value)
+                    mainViewModel.createRobotMessageService(connectViewModel.ip.value!!)
                     mainViewModel.sendCreateConnectionNotification()
                     mainViewModel.sendObserveNotification()
                 }

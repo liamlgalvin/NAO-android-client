@@ -26,8 +26,21 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
     val apps = homeViewModel.getTopApps()
     val groupedApps = homeViewModel.getAllAppsGrouped()
 
-    println("groupedApps = ${groupedApps}")
+    if (apps.isEmpty() && groupedApps.isEmpty()) {
+        NoAppsToDisplay(homeViewModel.robotIp.value)
+        return
+    }
 
+    DisplayHomeScreenItems(apps, groupedApps, navController, homeViewModel)
+}
+
+@Composable
+fun DisplayHomeScreenItems(
+    apps: List<App>,
+    groupedApps: Map<Char, List<App>>,
+    navController: NavController,
+    homeViewModel: HomeViewModel
+) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())) {
@@ -40,8 +53,27 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
             DiscoverApps(groupedApps.keys.sorted(), groupedApps, homeViewModel, navController)
         }
 
-    }
+    }}
 
+@Composable
+fun NoAppsToDisplay(robotIp: String) {
+    Box(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .align(alignment = Alignment.Center)) {
+
+        Text(text = stringResource(id = R.string.no_apps_to_display) ,
+            modifier = Modifier.padding(horizontal = 20.dp),
+            style = MaterialTheme.typography.h4,
+            fontWeight = Bold,
+            color = Color.LightGray
+        )
+        Text(text = stringResource(id = R.string.add_app_endpoint, robotIp) ,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+            style = MaterialTheme.typography.h5,
+            color = Color.White
+        )
+    }
+    }
 }
 
 private val emptyTabIndicator: @Composable (List<TabPosition>) -> Unit = {}

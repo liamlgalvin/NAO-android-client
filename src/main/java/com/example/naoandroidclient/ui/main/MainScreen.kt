@@ -116,7 +116,7 @@ fun displayConnectionSnackbar(
 
     if (mainViewModel.connectedState.value != mainViewModel.previousConnectedState.value) {
         mainViewModel.getConnectedState()?.let {message ->
-            displaySnackbar(scope, scaffoldState, stringResource(id = message))
+            displaySnackbar(scope, scaffoldState, stringResource(id = message)) // todo: add ip to message??
         }
     }
 

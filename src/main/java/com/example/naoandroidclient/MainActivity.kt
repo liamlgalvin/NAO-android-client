@@ -34,7 +34,11 @@ class MainActivity : ComponentActivity()  {
         super.onCreate(savedInstanceState)
 
         val activityNotificationObserver = createActivityNotificationObserver()
+        val robotIp = updateRobotIp()
+        connectViewModel.ip.observe(this, robotIp)
+
         mainViewModel.activityNotification.observe(this, activityNotificationObserver)
+
 
         setContent {
             NaoApp {
@@ -50,6 +54,17 @@ class MainActivity : ComponentActivity()  {
             }
         }
 
+    }
+
+    private fun updateRobotIp(): Observer<String> {
+        return Observer<String> { ip ->
+            when(ip){
+                else -> {
+                    homeViewModel.robotIp.value = ip
+                    mainViewModel.robotIp.value = ip
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

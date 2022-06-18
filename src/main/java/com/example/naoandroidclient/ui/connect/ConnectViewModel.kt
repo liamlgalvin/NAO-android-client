@@ -1,20 +1,14 @@
 package com.example.naoandroidclient.ui.connect
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ConnectViewModel @Inject constructor(private val state: SavedStateHandle): ViewModel() {
+class ConnectViewModel @Inject constructor(state: SavedStateHandle): ViewModel() {
 
-    var ip =  mutableStateOf(state["ip"] ?: "")
-
-    fun setIp(ip : String) {
-        this.ip.value = ip
-        state["ip"] = ip
-    }
+    var ip =  state.getLiveData("ip", "")
 
     fun isValidIp(ip: String): Boolean {
         if (ip == "") return false

@@ -45,6 +45,7 @@ class MainViewModel @Inject constructor(
 
     private val robotStatusMapper: RobotStatusMapper = RobotStatusMapper()
     lateinit var webSocketService: RobotMessageService
+    var robotIp = mutableStateOf("")
 
     var robotStatus =  state.getLiveData<RobotStatus>("robotStatus" , RobotStatus.NO_APP_RUNNING)
     var message =  state.getLiveData<Int>("message")

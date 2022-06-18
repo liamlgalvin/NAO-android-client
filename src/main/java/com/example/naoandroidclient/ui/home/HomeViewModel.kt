@@ -11,6 +11,8 @@ class HomeViewModel @Inject constructor(
     private var appRepository: InMemoryAppRepository
     ): ViewModel() {
 
+    var robotIp = mutableStateOf("")
+
     var tabIndex = mutableStateOf(0)
 
     fun getAllAppsGrouped() = appRepository.getAppsAlphabetisedGrouped()
