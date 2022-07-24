@@ -139,6 +139,7 @@ class MainViewModel @Inject constructor(
         } else {
             this.connectedState.value = R.string.check_ip
         }
+        sendDisconnectMessage()
         toggleConnectionStatus()
         toggleProgressBar()
         destroyWebSocket()
@@ -165,6 +166,11 @@ class MainViewModel @Inject constructor(
 
     fun destroyWebSocket() {
         client.dispatcher.executorService.shutdown()
+    }
+
+    fun sendDisconnectMessage() {
+        if (connectionStatus.value != ConnectionStatus.CONNECTED) return
+        sendMessage("destroy_connection", "connection destroyed")
     }
 
     fun toggleProgressBar() {

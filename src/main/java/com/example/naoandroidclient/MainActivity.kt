@@ -7,7 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.example.naoandroidclient.domain.ActivityNotification
-import com.example.naoandroidclient.domain.ConnectionStatus
 import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.component.AppBackground
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
@@ -69,12 +68,7 @@ class MainActivity : ComponentActivity()  {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        // move this to a function in view model
-        if (mainViewModel.connectionStatus.value == ConnectionStatus.CONNECTED) {
-            mainViewModel.sendMessage("destroy_connection", "connection destroyed")
-        }
-        mainViewModel.destroyWebSocket()
+        mainViewModel.disconnectWebSocket()
     }
 
     private fun createActivityNotificationObserver(): Observer<ActivityNotification> {
