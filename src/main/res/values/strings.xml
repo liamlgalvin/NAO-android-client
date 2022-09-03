@@ -40,8 +40,13 @@
     <string name="no_apps_to_display">There are no apps to display :(</string>
 
     <string name="add_app_endpoint">"Apps can be added via the endpoint on the robot at: http://%1$s:8000" </string>
+    <string name="battery">Battery: %1$s\%%</string>
 
-
+    <string name="default_apps">Default Apps</string>
+    <string name="rest">Rest</string>
+    <string name="stand">Stand</string>
+    <string name="what_nao_say">what do you want NAO to say?</string>
+    <string name="speak">Speak</string>
 
 
 </resources>

@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Message(
     val type: String,
-    val robotStatus: String, //create enum map this
-    val currentAppId: String, // map this if current
+    val robotStatus: String,
+    val currentAppId: String,
     val message: String
     )

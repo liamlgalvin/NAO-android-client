@@ -53,7 +53,7 @@ fun MainAppBar(
 
 
 @Composable
-private fun TopBarAction( //todo change this
+private fun TopBarAction(
     onClick: () -> Unit,
     imageVector: ImageVector,
     description: String

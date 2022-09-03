@@ -37,6 +37,13 @@
 
     <string name="no_apps_to_display">No hay apps para mostrar :(</string>
     <string name="add_app_endpoint">"Se puede añadir apps a través del endpoint en el robot: http://%1$s:8000" </string>
+    <string name="battery">Batería: %1$s\%%</string>
 
+    <string name="default_apps">Apps Por Defecto</string>
+
+    <string name="rest">Descansa</string>
+    <string name="stand">De pie</string>
+    <string name="what_nao_say">¿qué quieres que diga NAO?</string>
+    <string name="speak">Habla</string>
 
 </resources>

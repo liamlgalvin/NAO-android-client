@@ -25,8 +25,7 @@ fun DetailScreen(detailViewModel: DetailViewModel, mainViewModel: MainViewModel,
 
     val app = detailViewModel.getAppById(appId)
 
-    AppDetail(app, detailViewModel, mainViewModel) // todo: dont pass main view model
-
+    AppDetail(app, detailViewModel, mainViewModel)
 
 }
 

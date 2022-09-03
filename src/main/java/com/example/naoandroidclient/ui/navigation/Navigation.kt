@@ -9,6 +9,10 @@ import androidx.navigation.compose.navArgument
 import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.connect.ConnectScreen
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
+import com.example.naoandroidclient.ui.defaultapps.DefaultAppViewModel
+import com.example.naoandroidclient.ui.defaultapps.RestScreen
+import com.example.naoandroidclient.ui.defaultapps.SpeakScreen
+import com.example.naoandroidclient.ui.defaultapps.WalkScreen
 import com.example.naoandroidclient.ui.detail.DetailScreen
 import com.example.naoandroidclient.ui.detail.DetailViewModel
 import com.example.naoandroidclient.ui.home.HomeScreen
@@ -23,7 +27,8 @@ fun Navigation(
     searchViewModel: SearchViewModel,
     connectViewModel: ConnectViewModel,
     homeViewModel: HomeViewModel,
-    detailViewModel: DetailViewModel
+    detailViewModel: DetailViewModel,
+    defaultAppViewModel: DefaultAppViewModel
 ) {
 
     NavHost(navController = navController, startDestination = Screen.ConnectScreen.route) {
@@ -42,5 +47,17 @@ fun Navigation(
         composable(route = Screen.SearchScreen.route){
             SearchScreen(navController = navController, searchViewModel = searchViewModel)
         }
+
+
+        composable(route = Screen.SpeakScreen.route){
+            SpeakScreen(defaultAppViewModel, mainViewModel)
+        }
+        composable(route = Screen.WalkScreen.route){
+            WalkScreen(defaultAppViewModel, mainViewModel)
+        }
+        composable(route = Screen.RestScreen.route){
+            RestScreen(defaultAppViewModel, mainViewModel)
+        }
+
     }
 }

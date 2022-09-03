@@ -10,6 +10,7 @@ import com.example.naoandroidclient.domain.ActivityNotification
 import com.example.naoandroidclient.ui.MainViewModel
 import com.example.naoandroidclient.ui.component.AppBackground
 import com.example.naoandroidclient.ui.connect.ConnectViewModel
+import com.example.naoandroidclient.ui.defaultapps.DefaultAppViewModel
 import com.example.naoandroidclient.ui.detail.DetailViewModel
 import com.example.naoandroidclient.ui.home.HomeViewModel
 import com.example.naoandroidclient.ui.main.MainScreen
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity()  {
     private val mainAppBarViewModel: MainAppBarViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private val detailViewModel: DetailViewModel by viewModels()
+    private val defaultAppViewModel: DefaultAppViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +49,8 @@ class MainActivity : ComponentActivity()  {
                         connectViewModel = connectViewModel,
                         mainAppBarViewModel = mainAppBarViewModel,
                         homeViewModel = homeViewModel,
-                        detailViewModel = detailViewModel
+                        detailViewModel = detailViewModel,
+                        defaultAppViewModel = defaultAppViewModel
                     )
                 }
             }

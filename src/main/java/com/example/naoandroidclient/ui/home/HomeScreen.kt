@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.naoandroidclient.R
 import com.example.naoandroidclient.domain.App
+import com.example.naoandroidclient.domain.DefaultApp
 import com.example.naoandroidclient.ui.image.LargeLogoImage
 import com.example.naoandroidclient.ui.image.MediumLogoImage
 import com.example.naoandroidclient.ui.navigation.Screen
@@ -24,6 +26,7 @@ import com.example.naoandroidclient.ui.navigation.Screen
 @Composable
 fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
     val apps = homeViewModel.getTopApps()
+    val defaultApps = homeViewModel.getDefaultApps()
     val groupedApps = homeViewModel.getAllAppsGrouped()
 
     if (apps.isEmpty() && groupedApps.isEmpty()) {
@@ -31,12 +34,13 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel) {
         return
     }
 
-    DisplayHomeScreenItems(apps, groupedApps, navController, homeViewModel)
+    DisplayHomeScreenItems(apps, defaultApps, groupedApps, navController, homeViewModel)
 }
 
 @Composable
 fun DisplayHomeScreenItems(
     apps: List<App>,
+    defaultApps: List<DefaultApp>,
     groupedApps: Map<Char, List<App>>,
     navController: NavController,
     homeViewModel: HomeViewModel
@@ -45,9 +49,16 @@ fun DisplayHomeScreenItems(
         .fillMaxWidth()
         .verticalScroll(rememberScrollState())) {
 
+
         if (apps.isNotEmpty()) {
             TopApps(apps, navController)
         }
+
+        // add here default apps like walk etc...
+        if (defaultApps.isNotEmpty()) {
+            DefaultApps(defaultApps, navController)
+        }
+
 
         if (groupedApps.isNotEmpty()){
             DiscoverApps(groupedApps.keys.sorted(), groupedApps, homeViewModel, navController)
@@ -241,4 +252,73 @@ fun TopApps(apps: List<App>, navController: NavController) {
 
     }
 }
+
+
+
+@Composable
+fun DefaultApps(apps: List<DefaultApp>, navController: NavController) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp)) {
+
+        SectionHeaderText( text = stringResource(id = R.string.default_apps))
+        DefaultAppsRow(apps, navController)
+
+
+    }
+}
+
+@Composable
+fun DefaultAppsRow(apps: List<DefaultApp>, navController: NavController) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .fillMaxWidth()
+    ) {
+        apps.forEach {app ->
+            DefaultAppComposable(app, navController)
+        }
+    }
+}
+
+@Composable
+fun DefaultAppComposable(app: DefaultApp, navController: NavController) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier =
+        Modifier.clickable {
+            navController.navigate(app.ScreenRoute)
+        }) {
+
+        IconButton(
+            onClick = {
+                navController.navigate(app.ScreenRoute)
+            },
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 5.dp)
+                .background(
+                    color = Color.Gray,
+                    shape = RoundedCornerShape(100)
+                ),
+        ) {
+            Icon(
+                imageVector = app.image,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(10.dp),
+                tint = Color.DarkGray
+            )
+        }
+
+        Text(text = app.name, color = Color.Gray, modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .align(CenterHorizontally)
+        )
+    }
+}
+
 

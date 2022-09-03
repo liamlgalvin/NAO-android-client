@@ -9,7 +9,7 @@ import javax.inject.Inject
 class MainAppBarViewModel @Inject constructor() : ViewModel()  {
 
     private val pagesToShowSearch = listOf(Screen.HomeScreen.route, Screen.DetailScreen.route)
-    private val pagesToShowNavigation = listOf(Screen.DetailScreen.route, Screen.SearchScreen.route)
+    private val pagesToShowNavigation = listOf(Screen.DetailScreen.route, Screen.SearchScreen.route, Screen.SpeakScreen.route, Screen.WalkScreen.route, Screen.RestScreen.route)
 
 
     fun showSearchIcon(currentRoute: String) : Boolean {

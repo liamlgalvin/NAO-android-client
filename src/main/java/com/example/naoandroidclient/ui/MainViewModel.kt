@@ -9,10 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.naoandroidclient.R
 import com.example.naoandroidclient.data.repository.InMemoryAppRepository
-import com.example.naoandroidclient.domain.ActivityNotification
-import com.example.naoandroidclient.domain.App
-import com.example.naoandroidclient.domain.ConnectionStatus
-import com.example.naoandroidclient.domain.RobotStatus
+import com.example.naoandroidclient.domain.*
 import com.example.naoandroidclient.sockets.FlowStreamAdapter
 import com.example.naoandroidclient.sockets.RobotMessageService
 import com.example.naoandroidclient.sockets.dto.Message
@@ -51,6 +48,8 @@ class MainViewModel @Inject constructor(
     var message =  state.getLiveData<Int>("message")
     var errorMessage =  state.getLiveData<Int>("errorMessage")
     var currentApp =  state.getLiveData<App>("currentApp")
+    var battery = state.getLiveData<Int>("battery")
+
 
     var connectedState = state.getLiveData<Int>("connectedState")
     var previousConnectedState = mutableStateOf(0)
@@ -66,11 +65,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun sendMessage(type: String) {
-        sendMessage(type, "")
+        if (connectionStatus.value == ConnectionStatus.CONNECTED) {
+            sendMessage(type, "")
+        }
     }
 
     fun sendMessage(type: String, message: String) {
-        webSocketService.sendMessage(Message(type, "", "", message))
+        if (connectionStatus.value == ConnectionStatus.CONNECTED) {
+            webSocketService.sendMessage(Message(type, "", "", message))
+        }
     }
 
     fun observeConnection() {
@@ -104,7 +107,10 @@ class MainViewModel @Inject constructor(
 
         when (message.type) {
             "error" -> {
-                this.errorMessage.value = errorMessageMapper.map(message.message)
+                errorMessageMapper.map(message.message)?.let { updateErrorMessage(it) }
+            }
+            "battery" -> {
+                this.battery.value = message.message.toInt()
             }
             else -> this.message.value = messageMapper.map(message.message)
         }
@@ -184,5 +190,45 @@ class MainViewModel @Inject constructor(
             else -> {ConnectionStatus.NOT_CONNECTED}
         }
     }
+
+    fun updateBattery() {
+        sendMessage("battery")
+    }
+
+    fun moveRobot(controllerDirection: ControllerDirection) {
+        when (controllerDirection) {
+            ControllerDirection.FORWARD -> sendDefaultAppMessage("move", "forward")
+            ControllerDirection.LEFT -> sendDefaultAppMessage("move", "left")
+            ControllerDirection.RIGHT -> sendDefaultAppMessage("move", "right")
+            ControllerDirection.BACKWARD -> sendDefaultAppMessage("move", "backward")
+        }
+    }
+
+    fun robotSay(message: String) {
+        sendDefaultAppMessage("speak", message)
+    }
+
+    fun robotRest() {
+        sendDefaultAppMessage("rest", "")
+    }
+
+    fun robotStand() {
+        sendDefaultAppMessage("stand", "")
+
+    }
+
+    fun sendDefaultAppMessage(type: String, message: String) {
+        if (robotStatus.value == RobotStatus.APP_RUNNING) {
+            updateErrorMessage(R.string.app_already_runnng)
+            return
+        }
+        sendMessage(type, message)
+    }
+
+    private fun updateErrorMessage(errorId: Int) {
+        errorMessage.value = null
+        errorMessage.value = errorId
+    }
+
 
 }
